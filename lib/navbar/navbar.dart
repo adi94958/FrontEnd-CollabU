@@ -1,3 +1,4 @@
+import 'package:collab_u/pages/postingan.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:collab_u/controller/controller.dart';
@@ -25,6 +26,7 @@ class _NavBarState extends State<NavBar> {
           children: [
             Home(),
             Lamaran(),
+            Postingan(),
             Chat(),
             Activity(),
           ],
@@ -37,6 +39,13 @@ class _NavBarState extends State<NavBar> {
             items: [
               _BottombarItem(IconlyBold.home, "Home"),
               _BottombarItem(IconlyBold.work, "Lamaran"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.add_circle,
+                    size: 40,
+                    color: Color(0xFF130160),
+                  ),
+                  label: ""),
               _BottombarItem(IconlyBold.chat, "Chat"),
               _BottombarItem(IconlyBold.activity, "Activity"),
             ]),
