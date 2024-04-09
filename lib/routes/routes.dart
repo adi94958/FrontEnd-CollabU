@@ -10,6 +10,7 @@ import 'package:collab_u/pages/activity.dart';
 import 'package:collab_u/pages/chat.dart';
 import 'package:collab_u/pages/lamaran.dart';
 import 'package:collab_u/pages/profil.dart';
+import 'package:collab_u/pages/manajemen_lamaran.dart';
 
 class AppPage {
   static List<GetPage> routes = [
@@ -18,12 +19,13 @@ class AppPage {
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
-    GetPage(name: lamaran, page: () => const Postingan()),
+    GetPage(name: postingan, page: () => const Postingan()),
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
     GetPage(name: daftar_lowongan, page: () => const DaftarLowongan()),
     GetPage(name: profil, page: () => const Profil()),
     GetPage(name: notifikasi, page: () => const Notifikasi()),
+    GetPage(name: manajemen_lamaran, page: () => const ManajemenLamaran())
   ];
 
   static getSplashScreen() => splash;
@@ -37,6 +39,7 @@ class AppPage {
   static getDaftarLowongan() => daftar_lowongan;
   static getProfil() => profil;
   static getNotifikasi() => notifikasi;
+  static getManajemenLamaran() => manajemen_lamaran;
 
   static String splash = '/';
   static String start = '/start';
@@ -49,4 +52,5 @@ class AppPage {
   static String daftar_lowongan = '/daftar_lowongan';
   static String profil = '/profil';
   static String notifikasi = '/notifikasi';
+  static String manajemen_lamaran = '/lamaran/manajemen_lamaran';
 }

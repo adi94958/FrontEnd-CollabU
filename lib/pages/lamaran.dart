@@ -86,7 +86,7 @@ class _LamaranState extends State<Lamaran> {
   Widget daftarLowonganSaya() {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/');
+        Navigator.pushNamed(context, '/lamaran/manajemen_lamaran/');
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),
