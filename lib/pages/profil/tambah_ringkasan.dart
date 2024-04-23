@@ -24,10 +24,8 @@ class TambahRingkasanState extends State<TambahRingkasan> {
     );
 
     if (response.statusCode == 200) {
-      // Data berhasil diperbarui
       print('Data berhasil diperbarui');
     } else {
-      // Gagal memperbarui data
       print('Gagal memperbarui data');
     }
   }

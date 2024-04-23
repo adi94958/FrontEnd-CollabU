@@ -310,7 +310,7 @@ class PrestasiWidget extends StatelessWidget {
                   width: 10,
                 ),
                 const Text(
-                  'Pengalaman',
+                  'Prestasi',
                   style: TextStyle(
                     fontSize: 14,
                     fontFamily: 'DMSans',
@@ -318,10 +318,12 @@ class PrestasiWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  width: 130,
+                  width: 158,
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/profil/tambah_prestasi');
+                  },
                   icon: const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
                   iconSize: 24,
@@ -374,7 +376,10 @@ class PrestasiWidget extends StatelessWidget {
                                   Icons.border_color_outlined,
                                   color: Colors.orange,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/profil/edit_prestasi');
+                                },
                               ),
                             ),
                             Divider(
@@ -535,7 +540,13 @@ class JurusanWidget extends StatelessWidget {
                   width: 159,
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    dataJurusan.isNotEmpty
+                        ? Navigator.pushNamed(
+                            context, '/profil/edit_pengalaman')
+                        : Navigator.pushNamed(
+                            context, '/profil/tambah_pengalaman');
+                  },
                   icon: dataJurusan.isNotEmpty
                       ? const Icon(Icons.border_color_outlined)
                       : const Icon(Icons.add_circle_outline),
@@ -651,7 +662,9 @@ class PengalamanWidget extends StatelessWidget {
                   width: 130,
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/profil/tambah_pengalaman');
+                  },
                   icon: const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
                   iconSize: 24,
@@ -708,7 +721,10 @@ class PengalamanWidget extends StatelessWidget {
                                   Icons.border_color_outlined,
                                   color: Colors.orange,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/profil/edit_pengalaman');
+                                },
                               ),
                             ),
                             Divider(
@@ -903,7 +919,9 @@ class ProfilAtas extends StatelessWidget {
         top: 140,
         right: 10,
         child: ElevatedButton.icon(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/profil/edit');
+          },
           icon: const Icon(Icons.edit, color: Colors.white),
           label:
               const Text('Edit Profile', style: TextStyle(color: Colors.white)),
