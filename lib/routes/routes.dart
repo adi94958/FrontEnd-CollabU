@@ -1,6 +1,7 @@
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
 import 'package:collab_u/pages/postingan.dart';
+import 'package:collab_u/pages/profil/tambah_ringkasan.dart';
 import 'package:collab_u/pages/splashScreen.dart';
 import 'package:collab_u/pages/startScreen.dart';
 import 'package:get/get.dart';
@@ -23,9 +24,10 @@ class AppPage {
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
     GetPage(name: daftar_lowongan, page: () => const DaftarLowongan()),
-    GetPage(name: profil, page: () => const Profil()),
+    GetPage(name: profil, page: () => const ProfilPage()),
     GetPage(name: notifikasi, page: () => const Notifikasi()),
-    GetPage(name: manajemen_lamaran, page: () => const ManajemenLamaran())
+    GetPage(name: manajemen_lamaran, page: () => const ManajemenLamaran()),
+    GetPage(name: profil_ringkasan, page: () => const TambahRingkasan())
   ];
 
   static getSplashScreen() => splash;
@@ -40,6 +42,7 @@ class AppPage {
   static getProfil() => profil;
   static getNotifikasi() => notifikasi;
   static getManajemenLamaran() => manajemen_lamaran;
+  static getRingkasan() => profil_ringkasan;
 
   static String splash = '/';
   static String start = '/start';
@@ -53,4 +56,5 @@ class AppPage {
   static String profil = '/profil';
   static String notifikasi = '/notifikasi';
   static String manajemen_lamaran = '/lamaran/manajemen_lamaran';
+  static String profil_ringkasan = '/profil/tambah_ringkasan';
 }
