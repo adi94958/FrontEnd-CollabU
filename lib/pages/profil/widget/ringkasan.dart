@@ -1,45 +1,29 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class RingkasanWidget extends StatefulWidget {
+  final Map<String, dynamic> data;
+
   const RingkasanWidget({
-    super.key,
-  });
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
   @override
   _RingkasanWidgetState createState() => _RingkasanWidgetState();
 }
 
 class _RingkasanWidgetState extends State<RingkasanWidget> {
-  String tentangSaya = '';
-
-  Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/profil/1'));
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      setState(() {
-        tentangSaya = data['tentang_saya'];
-      });
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  @override
-  void initState() {
-    fetchData();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final String tentangSaya = widget.data['tentang_saya'] ?? '';
+
     return Container(
       height: tentangSaya.isNotEmpty ? 169 : 70,
       width: 335,
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         children: [
           Container(
@@ -61,9 +45,10 @@ class _RingkasanWidgetState extends State<RingkasanWidget> {
                 const Text(
                   'Ringkasan Pribadi',
                   style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.bold),
+                    fontSize: 14,
+                    fontFamily: 'DMSans',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(
                   width: 93,
