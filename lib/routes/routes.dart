@@ -4,14 +4,14 @@ import 'package:collab_u/pages/buat_lowongan/tambah_kualifikasi.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
 import 'package:collab_u/pages/postingan.dart';
-import 'package:collab_u/pages/profil/edit_profil_page.dart';
+import 'package:collab_u/pages/profil/edit/edit_profil_page.dart';
 import 'package:collab_u/pages/profil/jurusan/edit_jurusan.dart';
 import 'package:collab_u/pages/profil/jurusan/tambah_jurusan.dart';
 import 'package:collab_u/pages/profil/pengalaman/edit_pengalaman.dart';
 import 'package:collab_u/pages/profil/pengalaman/tambah_pengalaman.dart';
 import 'package:collab_u/pages/profil/prestasi/edit_prestasi.dart';
 import 'package:collab_u/pages/profil/prestasi/tambah_prestasi.dart';
-import 'package:collab_u/pages/profil/tambah_ringkasan.dart';
+import 'package:collab_u/pages/profil/ringkasan/tambah_ringkasan.dart';
 import 'package:collab_u/pages/splashScreen.dart';
 import 'package:collab_u/pages/startScreen.dart';
 import 'package:get/get.dart';
@@ -20,7 +20,7 @@ import 'package:collab_u/pages/home.dart';
 import 'package:collab_u/pages/activity.dart';
 import 'package:collab_u/pages/chat.dart';
 import 'package:collab_u/pages/lamaran.dart';
-import 'package:collab_u/pages/profil.dart';
+import 'package:collab_u/pages/profil/profil.dart';
 import 'package:collab_u/pages/manajemen_lamaran.dart';
 
 class AppPage {
