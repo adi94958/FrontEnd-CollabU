@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 
-List<String> skillsArray = [
-  "JavaScript",
-  "HTML",
-  "CSS",
-  "Python",
-  "Java",
-  "React",
-  "Node.js",
-  "SQL",
-  "MongoDB",
-  "Angular"
-];
+class KeahlianWidget extends StatefulWidget {
+  final List<Map<String, dynamic>> dataKeahlian;
 
-class KeahlianWidget extends StatelessWidget {
   const KeahlianWidget({
-    super.key,
-  });
+    Key? key,
+    required this.dataKeahlian,
+  }) : super(key: key);
 
+  @override
+  State<KeahlianWidget> createState() => _KeahlianWidgetState();
+}
+
+class _KeahlianWidgetState extends State<KeahlianWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: skillsArray.isNotEmpty ? 200 : 70,
+      height: widget.dataKeahlian.isNotEmpty ? 200 : 70,
       width: 335,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -55,7 +50,7 @@ class KeahlianWidget extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: skillsArray.isNotEmpty
+                  icon: widget.dataKeahlian.isNotEmpty
                       ? const Icon(Icons.border_color_outlined)
                       : const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
@@ -65,7 +60,7 @@ class KeahlianWidget extends StatelessWidget {
             ),
           ),
           // Check if ringkasan is not empty, if not, display Divider and Container
-          if (skillsArray.isNotEmpty)
+          if (widget.dataKeahlian.isNotEmpty)
             Column(
               children: [
                 const Divider(
@@ -81,10 +76,10 @@ class KeahlianWidget extends StatelessWidget {
                 Container(
                   color: Colors.white,
                   width: 280,
-                  height: skillsArray.isNotEmpty ? 164 - 60 : 0,
+                  height: widget.dataKeahlian.isNotEmpty ? 164 - 60 : 0,
                   child: SingleChildScrollView(
                     child: Wrap(
-                      children: skillsArray.map((skill) {
+                      children: widget.dataKeahlian.map((skill) {
                         return Container(
                           padding: const EdgeInsets.all(8.0),
                           margin: const EdgeInsets.all(4.0),
@@ -94,7 +89,7 @@ class KeahlianWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Text(
-                            skill,
+                            skill['keahlian'],
                             style: const TextStyle(fontFamily: 'DMSans'),
                           ),
                         );

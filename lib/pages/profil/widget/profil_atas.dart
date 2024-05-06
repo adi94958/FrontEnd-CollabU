@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ProfilAtas extends StatelessWidget {
+class ProfilAtas extends StatefulWidget {
   const ProfilAtas({
     super.key,
   });
 
+  @override
+  State<ProfilAtas> createState() => _ProfilAtasState();
+}
+
+class _ProfilAtasState extends State<ProfilAtas> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [

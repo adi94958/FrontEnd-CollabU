@@ -24,10 +24,8 @@ class TambahRingkasanState extends State<TambahRingkasan> {
     );
 
     if (response.statusCode == 200) {
-      print('Data berhasil diperbarui');
-    } else {
-      print('Gagal memperbarui data');
-    }
+      Navigator.pushNamed(context, '/profil');
+    } else {}
   }
 
   @override
@@ -220,7 +218,6 @@ class TambahRingkasanState extends State<TambahRingkasan> {
                           if (_formKey.currentState!.validate()) {
                             // Form is validated, submit your data
                             _updateData(ringkasanController.text);
-                            Navigator.pushNamed(context, '/profil');
                           }
                         },
                         style: ButtonStyle(
