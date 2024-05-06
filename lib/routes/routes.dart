@@ -1,3 +1,6 @@
+import 'package:collab_u/pages/buat_lowongan/tambah_deskripsi.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_job_desk.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_kualifikasi.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
 import 'package:collab_u/pages/postingan.dart';
@@ -42,6 +45,9 @@ class AppPage {
     GetPage(name: edit_pengalaman, page: () => const EditPengalaman()),
     GetPage(name: tambah_jurusan, page: () => const TambahJurusan()),
     GetPage(name: edit_jurusan, page: () => const EditJurusan()),
+    GetPage(name: tambah_deskripsi, page: () => const TambahDeskripsi()),
+    GetPage(name: tambah_kualifikasi, page: () => const TambahKualifikasi()),
+    GetPage(name: tambah_job_desk, page: () => const TambahJobDesk()),
   ];
 
   static getSplashScreen() => splash;
@@ -64,6 +70,9 @@ class AppPage {
   static getEditPrestasi() => edit_prestasi;
   static getEditPengalaman() => edit_pengalaman;
   static getEditJurusan() => edit_jurusan;
+  static getTambahDeskripsi() => tambah_deskripsi;
+  static getTambahKualifikasi() => tambah_kualifikasi;
+  static getTambahJobDesk() => tambah_job_desk;
 
   static String splash = '/';
   static String start = '/start';
@@ -85,4 +94,7 @@ class AppPage {
   static String edit_prestasi = '/profil/edit_prestasi';
   static String edit_pengalaman = '/profil/edit_pengalaman';
   static String edit_jurusan = '/profil/edit_jurusan';
+  static String tambah_deskripsi = '/profil/tambah-deskripsi';
+  static String tambah_kualifikasi = '/profil/tambah-kualifikasi';
+  static String tambah_job_desk = '/profil/tambah-job-desk';
 }

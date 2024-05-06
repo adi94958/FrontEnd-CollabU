@@ -21,6 +21,16 @@ class _PostinganState extends State<Postingan> {
             children: [
               Row(
                 children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/navbar');
+                    },
+                    icon: const Icon(
+                      Icons.west,
+                      color: Colors.black,
+                    ),
+                    iconSize: 27,
+                  ),
                   Expanded(
                     child: RichText(
                       textAlign: TextAlign.right,
@@ -62,9 +72,9 @@ class _PostinganState extends State<Postingan> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Kotak(text: 'Deskripsi'),
-                    Kotak(text: 'Kualifikasi'),
-                    Kotak(text: 'Job Desk'),
+                    Kotak(text: 'Deskripsi', url: '/profil/tambah-deskripsi'),
+                    Kotak(text: 'Kualifikasi', url: '/profil/tambah-kualifikasi'),
+                    Kotak(text: 'Job Desk', url: '/profil/tambah-job-desk'),
                   ],
                 ),
               ),
@@ -76,13 +86,14 @@ class _PostinganState extends State<Postingan> {
   }
 }
 
-class Kotak extends StatelessWidget{
+class Kotak extends StatelessWidget {
   final String text;
+  final String url;
 
-  Kotak({required this.text});
+  Kotak({required this.text, required this.url});
 
   @override
-  Widget build (BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       children: [
         SizedBox(height: 10),
@@ -102,16 +113,16 @@ class Kotak extends StatelessWidget{
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Color(0xFF150A33),
-                    fontSize: 14, 
-                    fontWeight: FontWeight.bold, 
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins',
                   ),
                 ),
               ),
               IconButton(
                 onPressed: () {
-                  // Nanti tambahin disini
-                }, 
+                  Navigator.pushReplacementNamed(context, url);
+                },
                 icon: Icon(LineAwesomeIcons.plus_circle),
                 iconSize: 30,
                 color: Colors.orange,
