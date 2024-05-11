@@ -1,7 +1,8 @@
+import 'package:collab_u/model/user_keahlian.dart';
 import 'package:flutter/material.dart';
 
 class KeahlianWidget extends StatefulWidget {
-  final List<Map<String, dynamic>> dataKeahlian;
+  final List<UserKeahlian> dataKeahlian;
 
   const KeahlianWidget({
     Key? key,
@@ -89,7 +90,7 @@ class _KeahlianWidgetState extends State<KeahlianWidget> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Text(
-                            skill['keahlian'],
+                            skill.keahlian,
                             style: const TextStyle(fontFamily: 'DMSans'),
                           ),
                         );

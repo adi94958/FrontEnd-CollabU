@@ -1,7 +1,8 @@
+import 'package:collab_u/model/user_pengalaman.dart';
 import 'package:flutter/material.dart';
 
 class PengalamanWidget extends StatefulWidget {
-  final List<Map<String, dynamic>> pengalamanData;
+  final List<UserPengalaman> pengalamanData;
 
   const PengalamanWidget({
     Key? key,
@@ -92,22 +93,20 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
                       children:
                           List.generate(widget.pengalamanData.length, (index) {
                         final perusahaan = widget.pengalamanData[index];
-                        final tahunBerakhir = perusahaan['tgl_selesai'];
-                        final String tahun = tahunBerakhir != null
-                            ? ' - $tahunBerakhir'
-                            : ' - Sekarang';
+                        final tahunBerakhir = perusahaan.tglSelesai;
+                        final String tahun = ' - $tahunBerakhir';
                         return Column(
                           children: [
                             ListTile(
                               title: Text(
-                                perusahaan['perusahaan'],
+                                perusahaan.perusahaan,
                                 style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                '${perusahaan['posisi']}\n${perusahaan['tgl_mulai']}$tahun',
+                                '${perusahaan.posisi}\n${perusahaan.tglMulai}$tahun',
                                 style: const TextStyle(
                                     fontFamily: 'DMSans', fontSize: 12),
                               ),
