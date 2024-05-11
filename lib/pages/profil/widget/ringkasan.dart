@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class RingkasanWidget extends StatefulWidget {
-  final Map<String, dynamic> data;
+  final String tentangSaya;
 
   const RingkasanWidget({
     Key? key,
-    required this.data,
+    required this.tentangSaya,
   }) : super(key: key);
 
   @override
@@ -15,8 +15,7 @@ class RingkasanWidget extends StatefulWidget {
 class _RingkasanWidgetState extends State<RingkasanWidget> {
   @override
   Widget build(BuildContext context) {
-    final String tentangSaya = widget.data['tentang_saya'] ?? '';
-
+    String tentangSaya = widget.tentangSaya;
     return Container(
       height: tentangSaya.isNotEmpty ? 169 : 70,
       width: 335,

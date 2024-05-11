@@ -1,7 +1,8 @@
+import 'package:collab_u/model/user_prestasi.dart';
 import 'package:flutter/material.dart';
 
 class PrestasiWidget extends StatefulWidget {
-  final List<Map<String, dynamic>> prestasiData;
+  final List<UserPrestasi> prestasiData;
 
   const PrestasiWidget({
     Key? key,
@@ -96,14 +97,14 @@ class _PrestasiWidgetState extends State<PrestasiWidget> {
                           children: [
                             ListTile(
                               title: Text(
-                                kompetisi['nama_penghargaan'],
+                                kompetisi.namaPenghargaan,
                                 style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                '${kompetisi['kategori']}\n${kompetisi['tahun']}',
+                                '${kompetisi.kategori}\n${kompetisi.tahun}',
                                 style: const TextStyle(
                                     fontFamily: 'DMSans', fontSize: 12),
                               ),

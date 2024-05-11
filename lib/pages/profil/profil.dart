@@ -1,12 +1,12 @@
+import 'package:collab_u/model/user_profile.dart';
 import 'package:collab_u/pages/profil/widget/jurusan.dart';
 import 'package:collab_u/pages/profil/widget/keahlian.dart';
 import 'package:collab_u/pages/profil/widget/pengalaman.dart';
 import 'package:collab_u/pages/profil/widget/prestasi.dart';
 import 'package:collab_u/pages/profil/widget/profil_atas.dart';
 import 'package:collab_u/pages/profil/widget/ringkasan.dart';
+import 'package:collab_u/services/user_api.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -16,25 +16,19 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  late Map<String, dynamic> profileData = {};
+  List<UserProfile> users = [];
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchUser();
   }
 
-  Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/profil/1'));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        profileData = json.decode(response.body);
-      });
-    } else {
-      throw Exception('Failed to load profile data');
-    }
+  Future<void> fetchUser() async {
+    final response = await UserApi.fetchUsers();
+    setState(() {
+      users = response;
+    });
   }
 
   @override
@@ -43,61 +37,32 @@ class _ProfilPageState extends State<ProfilPage> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(249, 249, 249, 255),
         body: SingleChildScrollView(
-          // ignore: unnecessary_null_comparison
-          child: profileData == null
+          child: users.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
                     const ProfilAtas(),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     Center(
                       child: Column(
                         children: [
-                          RingkasanWidget(data: profileData),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          PengalamanWidget(
-                              pengalamanData: (profileData['pengalaman'] != null
-                                  ? (profileData['pengalaman'] as List)
-                                      .cast<Map<String, dynamic>>()
-                                  : [])),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          RingkasanWidget(tentangSaya: users[0].tentangSaya),
+                          const SizedBox(height: 20),
+                          PengalamanWidget(pengalamanData: users[0].pengalaman),
+                          const SizedBox(height: 20),
                           const JurusanWidget(),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          KeahlianWidget(
-                              dataKeahlian: (profileData['keahlian'] != null
-                                  ? (profileData['keahlian'] as List)
-                                      .cast<Map<String, dynamic>>()
-                                  : [])),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          PrestasiWidget(
-                              prestasiData: (profileData['prestasi'] != null
-                                  ? (profileData['prestasi'] as List)
-                                      .cast<Map<String, dynamic>>()
-                                  : [])),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
+                          KeahlianWidget(dataKeahlian: users[0].keahlian),
+                          const SizedBox(height: 20),
+                          PrestasiWidget(prestasiData: users[0].prestasi),
+                          const SizedBox(height: 20),
                           const ResumeWidget(),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const LogoutWidget()
+                          const SizedBox(height: 20),
+                          const LogoutWidget(),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 50,
-                    )
+                    const SizedBox(height: 50),
                   ],
                 ),
         ),
