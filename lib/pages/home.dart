@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:collab_u/services/url_global.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -10,6 +13,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController _tabController;
+  late Map<String, dynamic> dataLowongan = {};
+  late Map<String, dynamic> profileData = {};
 
   @override
   void initState() {
@@ -18,6 +23,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       length: 3,
       vsync: this,
     );
+    fetchDataLowongan();
   }
 
   @override
@@ -26,11 +32,80 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // Future<void> fetchDataProfile() async {
+  //   final response =
+  //       await http.get(Uri.parse(baseUrl + '/api/profil/1'));
+
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       profileData = json.decode(response.body);
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load profile data');
+  //   }
+  // }
+
+  Future<void> fetchDataLowongan() async {
+    final response =
+        await http.get(Uri.parse(baseUrl + '/api/daftar-lowongan'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        dataLowongan = json.decode(response.body);
+      });
+    } else {
+      throw Exception('Failed to load lowongan data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF6F5F5),
-      // appBar: AppBar(title: const Text('Home Screen')),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF6F5F5),
+        title: Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: RichText(
+                textAlign: TextAlign.left,
+                text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Collab',
+                      style: TextStyle(
+                        color: Color(0xFF120A8F),
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'U',
+                      style: TextStyle(
+                        color: Color(0xFFF1801B),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/notifikasi');
+              },
+              child: const Icon(
+                Icons.notifications,
+                size: 30,
+                color: Color(0xFF524B6B),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -38,103 +113,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: RichText(
-                        textAlign: TextAlign.left,
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Collab',
-                              style: TextStyle(
-                                color: Color(0xFF120A8F),
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'U',
-                              style: TextStyle(
-                                color: Color(0xFFF1801B),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/notifikasi');
-                      },
-                      child: Icon(
-                        Icons.notifications,
-                        size: 30,
-                        color: Color(0xFF524B6B),
-                      ),
-                    ),
-                  ],
-                ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(
-                        context, '/profil'); // Ubah routes ke profile
+                    Navigator.pushNamed(context, '/profil');
                   },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 45,
-                          child: Image.asset('assets/images/profile.png'),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Halo, Adi.',
-                                style: TextStyle(
-                                  color: Color(0xFF150B3D),
-                                  fontSize: 14.0,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'D3 Teknik Informatika',
-                                style: TextStyle(
-                                  color: Color(0xFFAAA6B9),
-                                  fontSize: 12.0,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(23),
-                          child: Image.asset('assets/images/arrow-right.png'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: profile(),
                 ),
                 Image.asset('assets/images/banner.png'),
                 Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10),
                         child: Text(
                           'Daftar Lowongan',
                           style: TextStyle(
@@ -150,8 +140,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.pushNamed(context, '/daftar_lowongan');
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
                         child: Text(
                           'Lihat Semua',
                           textAlign: TextAlign.right,
@@ -177,11 +167,58 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
+  Widget profile() {
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 45,
+            child: Image.asset('assets/images/profile.png'),
+          ),
+        ),
+        const Expanded(
+          flex: 4,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Halo, Adi.',
+                  style: TextStyle(
+                    color: Color(0xFF150B3D),
+                    fontSize: 14.0,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'D3 Teknik Informatika',
+                  style: TextStyle(
+                    color: Color(0xFFAAA6B9),
+                    fontSize: 12.0,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(23),
+            child: Image.asset('assets/images/arrow-right.png'),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildJobItem(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
-        color: Color(0xFFFFFFFF),
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -189,12 +226,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20),
+              padding: EdgeInsets.only(top: 15, bottom: 15, left: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'UI / UX Designer',
+                    dataLowongan.isNotEmpty
+                        ? dataLowongan['posisi']
+                        : 'Loading...',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Color(0xFF150A33),
@@ -228,7 +267,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                // Panggil fungsi yang akan dijalankan saat tombol ditekan
                 showModalBottomSheet(
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
@@ -237,13 +275,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 );
               },
               child: Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: const EdgeInsets.only(right: 20),
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Color(0xFFfbded2),
+                  color: const Color(0xFFfbded2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Lamar',
                     style: TextStyle(
@@ -268,14 +306,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             minChildSize: 0.6,
             maxChildSize: 0.96,
             builder: (_, controller) => Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(20),
                 ),
               ),
-              padding:
-                  EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 10, right: 10),
               child: ListView(
                 controller: controller,
                 children: [
@@ -283,9 +321,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     child: Container(
                       width: 50,
                       height: 5,
-                      margin: EdgeInsets.only(bottom: 10),
+                      margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
-                        color: Color(0xFFE8E8E8),
+                        color: const Color(0xFFE8E8E8),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -293,15 +331,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   Row(
                     children: [
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           height: 45,
                           child: Image.asset('assets/images/profile.png'),
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         flex: 4,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -329,8 +367,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Center(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: const Center(
                       child: Column(
                         children: [
                           Text(
@@ -355,10 +393,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 20),
+                    margin: const EdgeInsets.only(top: 20),
                     height: 45,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF3F3F3),
+                      color: const Color(0xFFF3F3F3),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TabBar(
@@ -371,13 +409,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             color: Colors.black.withOpacity(0.2),
                             spreadRadius: 1,
                             blurRadius: 3,
-                            offset: Offset(
-                                0, 2), // perubahan bayangan diatur di sini
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      indicatorPadding: EdgeInsets.all(5),
-                      labelColor: Color(0xFF2E3137),
+                      indicatorPadding: const EdgeInsets.all(5),
+                      labelColor: const Color(0xFF2E3137),
                       indicatorSize: TabBarIndicatorSize.tab,
                       tabs: const [
                         Tab(
@@ -413,13 +450,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  Container(
-                    // color: Colors.red,
+                  SizedBox(
                     height: 500,
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        SingleChildScrollView(
+                        const SingleChildScrollView(
                           padding: EdgeInsets.all(10),
                           child: Text(
                             textAlign: TextAlign.justify,
@@ -431,8 +467,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             children: [
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: EdgeInsets.all(10),
-                                child: Text(
+                                padding: const EdgeInsets.all(10),
+                                child: const Text(
                                   'Jurusan',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -452,8 +488,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: EdgeInsets.all(10),
-                                child: Text(
+                                padding: const EdgeInsets.all(10),
+                                child: const Text(
                                   'Program Studi',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -478,8 +514,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: EdgeInsets.all(10),
-                                child: Text(
+                                padding: const EdgeInsets.all(10),
+                                child: const Text(
                                   'Jenjang Pendidikan',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -500,7 +536,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        SingleChildScrollView(
+                        const SingleChildScrollView(
                           padding: EdgeInsets.all(10),
                           child: Wrap(
                             children: [
@@ -534,12 +570,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               height: 80,
               color: Colors.white,
               child: Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFF9228),
+                  color: const Color(0xFFFF9228),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Lamar',
                     style: TextStyle(
@@ -557,19 +593,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   Widget itemDataKualifikasi(data) {
     return Container(
-      margin: EdgeInsets.only(left: 5, right: 5, bottom: 5),
-      padding: EdgeInsets.all(10),
+      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color(0xFFF3F3F3),
+        color: const Color(0xFFF3F3F3),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         data,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
         ),
       ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minWidth: 0,
         maxWidth: double.infinity,
       ),
