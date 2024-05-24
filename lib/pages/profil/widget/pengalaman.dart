@@ -1,68 +1,26 @@
+import 'package:collab_u/model/user_pengalaman.dart';
 import 'package:flutter/material.dart';
 
-List<Map<String, dynamic>> dataPerusahaan = [
-  {
-    'namaPerusahaan': 'Perusahaan A',
-    'posisi': 'Software Engineer',
-    'tahunMasuk': 2018,
-    'tahunBerakhir': 2020,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan B',
-    'posisi': 'Data Scientist',
-    'tahunMasuk': 2019,
-    'tahunBerakhir': 2021,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan C',
-    'posisi': 'Product Manager',
-    'tahunMasuk': 2020,
-    'tahunBerakhir': null,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan D',
-    'posisi': 'Data Scientist',
-    'tahunMasuk': 2019,
-    'tahunBerakhir': 2021,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan A',
-    'posisi': 'Software Engineer',
-    'tahunMasuk': 2018,
-    'tahunBerakhir': 2020,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan B',
-    'posisi': 'Data Scientist',
-    'tahunMasuk': 2019,
-    'tahunBerakhir': 2021,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan C',
-    'posisi': 'Product Manager',
-    'tahunMasuk': 2020,
-    'tahunBerakhir': null,
-  },
-  {
-    'namaPerusahaan': 'Perusahaan D',
-    'posisi': 'Data Scientist',
-    'tahunMasuk': 2019,
-    'tahunBerakhir': 2021,
-  },
-];
+class PengalamanWidget extends StatefulWidget {
+  final List<UserPengalaman> pengalamanData;
 
-class PengalamanWidget extends StatelessWidget {
   const PengalamanWidget({
-    super.key,
-  });
+    Key? key,
+    required this.pengalamanData,
+  }) : super(key: key);
 
+  @override
+  State<PengalamanWidget> createState() => _PengalamanWidgetState();
+}
+
+class _PengalamanWidgetState extends State<PengalamanWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: dataPerusahaan.isNotEmpty
-          ? dataPerusahaan.length > 3
+      height: widget.pengalamanData.isNotEmpty
+          ? widget.pengalamanData.length > 3
               ? 70 * 3 + 100
-              : 70 * dataPerusahaan.length.toDouble() + 100
+              : 70 * widget.pengalamanData.length.toDouble() + 100
           : 70,
       width: 335,
       decoration: BoxDecoration(
@@ -109,8 +67,8 @@ class PengalamanWidget extends StatelessWidget {
               ],
             ),
           ),
-          // Check if dataPerusahaan is not empty, if not, display Divider and Container
-          if (dataPerusahaan.isNotEmpty)
+          // Check if pengalamanData is not empty, if not, display Divider and Container
+          if (widget.pengalamanData.isNotEmpty)
             Column(
               children: [
                 const Divider(
@@ -124,32 +82,31 @@ class PengalamanWidget extends StatelessWidget {
                   height: 5,
                 ),
                 SizedBox(
-                  height: dataPerusahaan.isNotEmpty
-                      ? dataPerusahaan.length > 3
+                  height: widget.pengalamanData.isNotEmpty
+                      ? widget.pengalamanData.length > 3
                           ? 70 * 3
-                          : 70 * dataPerusahaan.length.toDouble()
+                          : 70 * widget.pengalamanData.length.toDouble()
                       : 0,
                   width: 320,
                   child: SingleChildScrollView(
                     child: Column(
-                      children: List.generate(dataPerusahaan.length, (index) {
-                        final perusahaan = dataPerusahaan[index];
-                        final tahunBerakhir = perusahaan['tahunBerakhir'];
-                        final String tahun = tahunBerakhir != null
-                            ? ' - $tahunBerakhir'
-                            : ' - Sekarang';
+                      children:
+                          List.generate(widget.pengalamanData.length, (index) {
+                        final perusahaan = widget.pengalamanData[index];
+                        final tahunBerakhir = perusahaan.tglSelesai;
+                        final String tahun = ' - $tahunBerakhir';
                         return Column(
                           children: [
                             ListTile(
                               title: Text(
-                                perusahaan['namaPerusahaan'],
+                                perusahaan.perusahaan,
                                 style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                '${perusahaan['posisi']}\n${perusahaan['tahunMasuk']}$tahun',
+                                '${perusahaan.posisi}\n${perusahaan.tglMulai}$tahun',
                                 style: const TextStyle(
                                     fontFamily: 'DMSans', fontSize: 12),
                               ),

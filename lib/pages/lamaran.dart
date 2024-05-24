@@ -11,58 +11,70 @@ class _LamaranState extends State<Lamaran> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF6F5F5),
+        toolbarHeight: 90,
+        title: Container(
+          child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Collab',
+                                style: TextStyle(
+                                  color: Color(0xFF120A8F),
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'U',
+                                style: TextStyle(
+                                  color: Color(0xFFF1801B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Text(
+                        'Manajemen Lowongan Saya',
+                        style: TextStyle(
+                          color: Color(0xFF150B3D),
+                          fontSize: 20,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                ],
+              ),
+        ),
+      ),
       backgroundColor: Color(0xFFF6F5F5),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.right,
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Collab',
-                              style: TextStyle(
-                                color: Color(0xFF120A8F),
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'U',
-                              style: TextStyle(
-                                color: Color(0xFFF1801B),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      'Manajemen Lowongan Saya',
-                      style: TextStyle(
-                        color: Color(0xFF150B3D),
-                        fontSize: 20,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
                 daftarLowonganSaya(),
                 daftarLowonganSaya(),
                 daftarLowonganSaya(),

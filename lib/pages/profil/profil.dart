@@ -1,71 +1,70 @@
+import 'package:collab_u/model/user_profile.dart';
 import 'package:collab_u/pages/profil/widget/jurusan.dart';
 import 'package:collab_u/pages/profil/widget/keahlian.dart';
 import 'package:collab_u/pages/profil/widget/pengalaman.dart';
 import 'package:collab_u/pages/profil/widget/prestasi.dart';
 import 'package:collab_u/pages/profil/widget/profil_atas.dart';
 import 'package:collab_u/pages/profil/widget/ringkasan.dart';
+import 'package:collab_u/services/user_api.dart';
 import 'package:flutter/material.dart';
 
 class ProfilPage extends StatefulWidget {
-  const ProfilPage({super.key});
+  const ProfilPage({Key? key}) : super(key: key);
 
   @override
   State<ProfilPage> createState() => _ProfilPageState();
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  List<UserProfile> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  Future<void> fetchUser() async {
+    final response = await UserApi.fetchUsers();
+    setState(() {
+      users = response;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(249, 249, 249, 255),
+        backgroundColor: const Color.fromARGB(249, 249, 249, 255),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ProfilAtas(),
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: Column(
+          child: users.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
                   children: [
-                    RingkasanWidget(),
-                    SizedBox(
-                      height: 20,
+                    const ProfilAtas(),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Column(
+                        children: [
+                          RingkasanWidget(tentangSaya: users[0].tentangSaya),
+                          const SizedBox(height: 20),
+                          PengalamanWidget(pengalamanData: users[0].pengalaman),
+                          const SizedBox(height: 20),
+                          const JurusanWidget(),
+                          const SizedBox(height: 20),
+                          KeahlianWidget(dataKeahlian: users[0].keahlian),
+                          const SizedBox(height: 20),
+                          PrestasiWidget(prestasiData: users[0].prestasi),
+                          const SizedBox(height: 20),
+                          const ResumeWidget(),
+                          const SizedBox(height: 20),
+                          const LogoutWidget(),
+                        ],
+                      ),
                     ),
-                    PengalamanWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    JurusanWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    KeahlianWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    JurusanWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    PrestasiWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    ResumeWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    LogoutWidget()
+                    const SizedBox(height: 50),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 50,
-              )
-            ],
-          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:collab_u/services/url_global.dart';
 
 // ignore: non_constant_identifier_names
 var Ringkasan =
@@ -17,17 +18,15 @@ class TambahRingkasanState extends State<TambahRingkasan> {
   final ringkasanController = TextEditingController();
 
   Future<void> _updateData(String newData) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/profil/tentang-saya/1');
+    final url = Uri.parse(baseUrl + 'api/profil/tentang-saya/1');
     final response = await http.put(
       url,
       body: {'tentang_saya': newData},
     );
 
     if (response.statusCode == 200) {
-      print('Data berhasil diperbarui');
-    } else {
-      print('Gagal memperbarui data');
-    }
+      Navigator.pushNamed(context, '/profil');
+    } else {}
   }
 
   @override
@@ -220,7 +219,6 @@ class TambahRingkasanState extends State<TambahRingkasan> {
                           if (_formKey.currentState!.validate()) {
                             // Form is validated, submit your data
                             _updateData(ringkasanController.text);
-                            Navigator.pushNamed(context, '/profil');
                           }
                         },
                         style: ButtonStyle(

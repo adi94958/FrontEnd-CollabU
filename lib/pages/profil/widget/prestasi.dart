@@ -1,45 +1,26 @@
+import 'package:collab_u/model/user_prestasi.dart';
 import 'package:flutter/material.dart';
 
-List<Map<String, dynamic>> dataPrestasi = [
-  {
-    'penghargaan': 'Juara 1 PKM',
-    'kompetisi': 'Pekan Kreatifitas Mahasiswa',
-    'tahunKompetisi': 2022,
-  },
-  {
-    'penghargaan': 'Juara Harapan 1 Lomba Karya Tulis Ilmiah',
-    'kompetisi': 'Olimpiade Sains Nasional',
-    'tahunKompetisi': 2021,
-  },
-  {
-    'penghargaan': 'Pemenang Kompetisi Inovasi Teknologi',
-    'kompetisi': 'Hackathon Nasional',
-    'tahunKompetisi': 2020,
-  },
-  {
-    'penghargaan': 'Juara 3 Kompetisi Debat Bahasa Inggris',
-    'kompetisi': 'Debat Bahasa Inggris Universitas',
-    'tahunKompetisi': 2019,
-  },
-  {
-    'penghargaan': 'Pemenang Kompetisi Penulisan Puisi',
-    'kompetisi': 'Festival Sastra Mahasiswa',
-    'tahunKompetisi': 2018,
-  },
-];
+class PrestasiWidget extends StatefulWidget {
+  final List<UserPrestasi> prestasiData;
 
-class PrestasiWidget extends StatelessWidget {
   const PrestasiWidget({
-    super.key,
-  });
+    Key? key,
+    required this.prestasiData,
+  }) : super(key: key);
 
+  @override
+  State<PrestasiWidget> createState() => _PrestasiWidgetState();
+}
+
+class _PrestasiWidgetState extends State<PrestasiWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: dataPrestasi.isNotEmpty
-          ? dataPrestasi.length > 3
+      height: widget.prestasiData.isNotEmpty
+          ? widget.prestasiData.length > 3
               ? 70 * 3 + 100
-              : 70 * dataPrestasi.length.toDouble() + 100
+              : 70 * widget.prestasiData.length.toDouble() + 100
           : 70,
       width: 335,
       decoration: BoxDecoration(
@@ -86,8 +67,8 @@ class PrestasiWidget extends StatelessWidget {
               ],
             ),
           ),
-          // Check if dataPerusahaan is not empty, if not, display Divider and Container
-          if (dataPrestasi.isNotEmpty)
+          // Check if prestasiData is not empty, if not, display Divider and Container
+          if (widget.prestasiData.isNotEmpty)
             Column(
               children: [
                 const Divider(
@@ -101,28 +82,29 @@ class PrestasiWidget extends StatelessWidget {
                   height: 5,
                 ),
                 SizedBox(
-                  height: dataPrestasi.isNotEmpty
-                      ? dataPrestasi.length > 3
+                  height: widget.prestasiData.isNotEmpty
+                      ? widget.prestasiData.length > 3
                           ? 70 * 3
-                          : 70 * dataPrestasi.length.toDouble()
+                          : 70 * widget.prestasiData.length.toDouble()
                       : 0,
                   width: 320,
                   child: SingleChildScrollView(
                     child: Column(
-                      children: List.generate(dataPrestasi.length, (index) {
-                        final kompetisi = dataPrestasi[index];
+                      children:
+                          List.generate(widget.prestasiData.length, (index) {
+                        final kompetisi = widget.prestasiData[index];
                         return Column(
                           children: [
                             ListTile(
                               title: Text(
-                                kompetisi['penghargaan'],
+                                kompetisi.namaPenghargaan,
                                 style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                '${kompetisi['kompetisi']}\n${kompetisi['tahunKompetisi']}',
+                                '${kompetisi.kategori}\n${kompetisi.tahun}',
                                 style: const TextStyle(
                                     fontFamily: 'DMSans', fontSize: 12),
                               ),
