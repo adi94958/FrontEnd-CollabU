@@ -1,3 +1,5 @@
+import 'package:collab_u/model/home/lowongan.dart';
+import 'package:collab_u/services/lowongan_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:collab_u/services/url_global.dart';
@@ -13,8 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController _tabController;
-  late Map<String, dynamic> dataLowongan = {};
-  late Map<String, dynamic> profileData = {};
+  List<Lowongan> lowongans = [];
 
   @override
   void initState() {
@@ -23,7 +24,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       length: 3,
       vsync: this,
     );
-    fetchDataLowongan();
+    fetchLowongan();
   }
 
   @override
@@ -32,29 +33,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // Future<void> fetchDataProfile() async {
-  //   final response =
-  //       await http.get(Uri.parse(baseUrl + '/api/profil/1'));
+  Future<void> fetchLowongan() async {
+    final response = await LowonganService.fetchLowongans();
+    setState(() {
+      lowongans = response;
+    });
+  }
 
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       profileData = json.decode(response.body);
-  //     });
-  //   } else {
-  //     throw Exception('Failed to load profile data');
-  //   }
-  // }
+  String calculateTimeAgo(String dateString) {
+    final DateTime date = DateTime.parse(dateString);
+    final Duration difference = DateTime.now().difference(date);
 
-  Future<void> fetchDataLowongan() async {
-    final response =
-        await http.get(Uri.parse(baseUrl + '/api/daftar-lowongan'));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        dataLowongan = json.decode(response.body);
-      });
+    if (difference.inDays > 0) {
+      return '${difference.inDays} Hari yang lalu';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} Jam yang lalu';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} Menit yang lalu';
     } else {
-      throw Exception('Failed to load lowongan data');
+      return 'Baru saja';
     }
   }
 
@@ -155,10 +152,31 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-                buildJobItem(context),
-                buildJobItem(context),
-                buildJobItem(context),
-                buildJobItem(context),
+                FutureBuilder<List<Lowongan>>(
+                  future: LowonganService.fetchLowongans(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      print('Error: ${snapshot.error}');
+                      return Center(child: Text('Failed to load data'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No data available'));
+                    } else {
+                      final lowonganList = snapshot.data!;
+                      return Column(
+                        children: lowonganList.map((lowongan) {
+                          return buildJobItem(
+                            context,
+                            lowongan.posisi,
+                            lowongan.kompetisi,
+                            lowongan.tglPosting,
+                          );
+                        }).toList(),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -214,7 +232,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildJobItem(BuildContext context) {
+  Widget buildJobItem(BuildContext context, String posisi, String kompetisi,
+      String tglPosting) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -231,9 +250,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    dataLowongan.isNotEmpty
-                        ? dataLowongan['posisi']
-                        : 'Loading...',
+                    posisi,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Color(0xFF150A33),
@@ -243,7 +260,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ),
                   Text(
-                    'Pekan Kreatifitas Mahasiswa',
+                    kompetisi,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Color(0xFF524B6B),
@@ -252,7 +269,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ),
                   Text(
-                    '2 Hari yang lalu',
+                    calculateTimeAgo(tglPosting),
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Color(0xFF94929B),
