@@ -1,5 +1,6 @@
-import 'package:collab_u/model/Home/angkatan.dart';
-import 'package:collab_u/model/Home/prodi.dart';
+import 'package:collab_u/model/home/angkatan.dart';
+import 'package:collab_u/model/home/jurusan.dart';
+import 'package:collab_u/model/home/prodi.dart';
 
 class Lowongan {
   int idLowongan;
@@ -10,8 +11,11 @@ class Lowongan {
   int idPengguna;
   String tglPosting;
   String? tglEdit;
+  List<Jurusan> jurusan;
   List<Prodi> prodi;
   List<Angkatan> angkatan;
+  String nama;
+  String prodi_perekrut;
 
   Lowongan({
     required this.idLowongan,
@@ -22,8 +26,11 @@ class Lowongan {
     required this.idPengguna,
     required this.tglPosting,
     this.tglEdit,
+    required this.jurusan,
     required this.prodi,
     required this.angkatan,
+    required this.nama,
+    required this.prodi_perekrut,
   });
 
   factory Lowongan.fromJson(Map<String, dynamic> json) {
@@ -36,9 +43,13 @@ class Lowongan {
       idPengguna: json['id_pengguna'],
       tglPosting: json['tgl_posting'],
       tglEdit: json['tgl_edit'],
+      jurusan:
+          List<Jurusan>.from(json['jurusan'].map((x) => Jurusan.fromJson(x))),
       prodi: List<Prodi>.from(json['prodi'].map((x) => Prodi.fromJson(x))),
       angkatan: List<Angkatan>.from(
           json['angkatan'].map((x) => Angkatan.fromJson(x))),
+      nama: json['pengguna']['nama_lengkap'],
+      prodi_perekrut: json['pengguna']['prodi']['nama_prodi'],
     );
   }
 }

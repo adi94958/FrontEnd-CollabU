@@ -1,10 +1,11 @@
+import 'package:collab_u/model/home/angkatan.dart';
+import 'package:collab_u/model/home/jurusan.dart';
 import 'package:collab_u/model/home/lowongan.dart';
+import 'package:collab_u/model/home/prodi.dart';
+import 'package:collab_u/services/loading_shimer_lowongan.dart';
 import 'package:collab_u/services/lowongan_api.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:collab_u/services/url_global.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:shimmer/shimmer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,7 +16,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController _tabController;
-  List<Lowongan> lowongans = [];
 
   @override
   void initState() {
@@ -24,20 +24,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       length: 3,
       vsync: this,
     );
-    fetchLowongan();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> fetchLowongan() async {
-    final response = await LowonganService.fetchLowongans();
-    setState(() {
-      lowongans = response;
-    });
   }
 
   String calculateTimeAgo(String dateString) {
@@ -156,21 +148,32 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   future: LowonganService.fetchLowongans(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return Column(
+                        children: List.generate(
+                          5,
+                          (index) => buildJobItemPlaceholderShimmer(),
+                        ),
+                      );
                     } else if (snapshot.hasError) {
                       print('Error: ${snapshot.error}');
                       return Center(child: Text('Failed to load data'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(child: Text('No data available'));
                     } else {
-                      final lowonganList = snapshot.data!;
                       return Column(
-                        children: lowonganList.map((lowongan) {
+                        children: (snapshot.data!.take(5)).map((lowongan) {
                           return buildJobItem(
                             context,
                             lowongan.posisi,
                             lowongan.kompetisi,
                             lowongan.tglPosting,
+                            lowongan.nama,
+                            lowongan.prodi_perekrut,
+                            lowongan.deskripsiKerja,
+                            lowongan.deskripsi,
+                            lowongan.jurusan,
+                            lowongan.prodi,
+                            lowongan.angkatan,
                           );
                         }).toList(),
                       );
@@ -232,8 +235,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildJobItem(BuildContext context, String posisi, String kompetisi,
-      String tglPosting) {
+  Widget buildJobItem(
+    BuildContext context,
+    String posisi,
+    String kompetisi,
+    String tglPosting,
+    String nama,
+    String prodi_perekrut,
+    String deskripsiKerja,
+    String deskripsi,
+    List<Jurusan> jurusanList,
+    List<Prodi> prodiList,
+    List<Angkatan> angkatanList,
+  ) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -288,7 +302,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   context: context,
-                  builder: (context) => buildSheet(),
+                  builder: (context) => buildSheet(
+                    posisi,
+                    kompetisi,
+                    tglPosting,
+                    nama,
+                    prodi_perekrut,
+                    deskripsiKerja,
+                    deskripsi,
+                    jurusanList,
+                    prodiList,
+                    angkatanList,
+                  ),
                 );
               },
               child: Container(
@@ -316,7 +341,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildSheet() => Stack(
+  Widget buildSheet(
+    String posisi,
+    String kompetisi,
+    String tglPosting,
+    String nama,
+    String prodi_perekrut,
+    String deskripsiKerja,
+    String deskripsi,
+    List<Jurusan> jurusanList,
+    List<Prodi> prodiList,
+    List<Angkatan> angkatanList,
+  ) =>
+      Stack(
         children: [
           DraggableScrollableSheet(
             initialChildSize: 0.75,
@@ -353,16 +390,16 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           child: Image.asset('assets/images/profile.png'),
                         ),
                       ),
-                      const Expanded(
+                      Expanded(
                         flex: 4,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Adinda Raisa Azzahra',
-                                style: TextStyle(
+                                nama,
+                                style: const TextStyle(
                                   color: Color(0xFF150B3D),
                                   fontSize: 14.0,
                                   fontFamily: 'Poppins',
@@ -370,8 +407,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                 ),
                               ),
                               Text(
-                                'D3 Teknik Informatika',
-                                style: TextStyle(
+                                prodi_perekrut,
+                                style: const TextStyle(
                                   color: Color(0xFFAAA6B9),
                                   fontSize: 12.0,
                                   fontFamily: 'Poppins',
@@ -385,12 +422,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 20),
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         children: [
                           Text(
-                            'UI / UX Designer',
-                            style: TextStyle(
+                            posisi,
+                            style: const TextStyle(
                               color: Color(0xFF2E3137),
                               fontSize: 24,
                               fontFamily: 'Poppins',
@@ -398,8 +435,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             ),
                           ),
                           Text(
-                            'Pekan Kreativitas Mahasiswa',
-                            style: TextStyle(
+                            kompetisi,
+                            style: const TextStyle(
                               color: Color(0xFF9EA1A5),
                               fontSize: 12,
                               fontFamily: 'Poppins',
@@ -472,11 +509,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        const SingleChildScrollView(
-                          padding: EdgeInsets.all(10),
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(10),
                           child: Text(
                             textAlign: TextAlign.justify,
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor. ',
+                            deskripsi,
                           ),
                         ),
                         SingleChildScrollView(
@@ -496,11 +533,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Wrap(
-                                  children: [
-                                    itemDataKualifikasi(
-                                        'Teknik Komputer dan Informatika'),
-                                    itemDataKualifikasi('Teknik Elektro'),
-                                  ],
+                                  children: jurusanList.map((jurusan) {
+                                    return itemDataKualifikasi(
+                                        jurusan.nama_jurusan);
+                                  }).toList(),
                                 ),
                               ),
                               Container(
@@ -517,16 +553,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Wrap(
-                                  children: [
-                                    itemDataKualifikasi(
-                                        'D3-Teknik Informatika'),
-                                    itemDataKualifikasi(
-                                        'D4-Teknik Informatika'),
-                                    itemDataKualifikasi(
-                                        'D3-Teknik Telekomunikasi'),
-                                    itemDataKualifikasi(
-                                        'D4-Teknik Telekomunikasi'),
-                                  ],
+                                  children: prodiList.map((prodi) {
+                                    return itemDataKualifikasi(
+                                        prodi.nama_prodi);
+                                  }).toList(),
                                 ),
                               ),
                               Container(
@@ -543,31 +573,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Wrap(
-                                  children: [
-                                    itemDataKualifikasi('Tingkat 1'),
-                                    itemDataKualifikasi('Tingkat 2'),
-                                    itemDataKualifikasi('Tingkat 3'),
-                                  ],
+                                  children: angkatanList.map((angkatan) {
+                                    return itemDataKualifikasi(
+                                        angkatan.angkatan);
+                                  }).toList(),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SingleChildScrollView(
-                          padding: EdgeInsets.all(10),
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(10),
                           child: Wrap(
                             children: [
                               Text(
-                                '1. Lorem ipsum dolor sit amet, consectetur elit.',
-                              ),
-                              Text(
-                                '2. Lorem ipsum dolor sit amet, consectetur elit.',
-                              ),
-                              Text(
-                                '3. Lorem ipsum dolor sit amet, consectetur elit.',
-                              ),
-                              Text(
-                                '4. Lorem ipsum dolor sit amet, consectetur elit.',
+                                deskripsiKerja,
                               ),
                             ],
                           ),
