@@ -23,15 +23,15 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      idPengguna: json['id_pengguna'],
-      email: json['email'],
-      password: json['password'],
-      namaLengkap: json['nama_lengkap'],
-      namaPanggilan: json['nama_panggilan'],
-      tanggalLahir: json['tanggal_lahir'],
-      jenisKelamin: json['jenis_kelamin'],
-      noTelp: json['no_telp'],
-      idPt: json['id_pt'],
+      idPengguna: json['id_pengguna'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      namaLengkap: json['nama_lengkap'] ?? '',
+      namaPanggilan: json['nama_panggilan'] ?? '',
+      tanggalLahir: json['tanggal_lahir'] ?? '',
+      jenisKelamin: json['jenis_kelamin'] ?? '',
+      noTelp: json['no_telp'] ?? '',
+      idPt: json['id_pt'] ?? '',
     );
   }
 }

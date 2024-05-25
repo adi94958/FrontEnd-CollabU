@@ -11,9 +11,9 @@ class UserKeahlian {
 
   factory UserKeahlian.fromJson(Map<String, dynamic> json) {
     return UserKeahlian(
-      id: json['id'],
-      keahlian: json['keahlian'],
-      idProfil: json['id_profil'],
+      id: json['id'] ?? '',
+      keahlian: json['keahlian'] ?? '',
+      idProfil: json['id_profil'] ?? '',
     );
   }
 }
