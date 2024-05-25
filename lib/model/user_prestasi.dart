@@ -15,11 +15,11 @@ class UserPrestasi {
 
   factory UserPrestasi.fromJson(Map<String, dynamic> json) {
     return UserPrestasi(
-      id: json['id'],
-      idProfil: json['id_profil'],
-      namaPenghargaan: json['nama_penghargaan'],
-      kategori: json['kategori'],
-      tahun: json['tahun'],
+      id: json['id'] ?? '',
+      idProfil: json['id_profil'] ?? '',
+      namaPenghargaan: json['nama_penghargaan'] ?? '',
+      kategori: json['kategori'] ?? '',
+      tahun: json['tahun'] ?? '',
     );
   }
 }

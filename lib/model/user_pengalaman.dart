@@ -17,12 +17,12 @@ class UserPengalaman {
 
   factory UserPengalaman.fromJson(Map<String, dynamic> json) {
     return UserPengalaman(
-      id: json['id'],
-      idProfil: json['id_profil'],
-      tglMulai: json['tgl_mulai'],
-      tglSelesai: json['tgl_selesai'],
-      posisi: json['posisi'],
-      perusahaan: json['perusahaan'],
+      id: json['id'] ?? '',
+      idProfil: json['id_profil'] ?? '',
+      tglMulai: json['tgl_mulai'] ?? '',
+      tglSelesai: json['tgl_selesai'] ?? '',
+      posisi: json['posisi'] ?? '',
+      perusahaan: json['perusahaan'] ?? '',
     );
   }
 }

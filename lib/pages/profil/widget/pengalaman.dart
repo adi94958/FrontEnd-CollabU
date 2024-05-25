@@ -71,23 +71,13 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
           if (widget.pengalamanData.isNotEmpty)
             Column(
               children: [
-                const Divider(
-                  thickness: 0,
-                  height: 1,
-                  indent: 25,
-                  endIndent: 25,
-                  color: Colors.black,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
                 SizedBox(
                   height: widget.pengalamanData.isNotEmpty
                       ? widget.pengalamanData.length > 3
                           ? 70 * 3
                           : 70 * widget.pengalamanData.length.toDouble()
                       : 0,
-                  width: 320,
+                  width: 335,
                   child: SingleChildScrollView(
                     child: Column(
                       children:
@@ -95,39 +85,46 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
                         final perusahaan = widget.pengalamanData[index];
                         final tahunBerakhir = perusahaan.tglSelesai;
                         final String tahun = ' - $tahunBerakhir';
-                        return Column(
-                          children: [
-                            ListTile(
-                              title: Text(
-                                perusahaan.perusahaan,
-                                style: const TextStyle(
-                                    fontFamily: 'DMSans',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Column(
+                            children: [
+                              const Divider(
+                                thickness: 0,
+                                height: 1,
+                                indent: 15,
+                                endIndent: 25,
+                                color: Colors.black,
                               ),
-                              subtitle: Text(
-                                '${perusahaan.posisi}\n${perusahaan.tglMulai}$tahun',
-                                style: const TextStyle(
-                                    fontFamily: 'DMSans', fontSize: 12),
+                              const SizedBox(
+                                height: 5,
                               ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.border_color_outlined,
-                                  color: Colors.orange,
+                              ListTile(
+                                title: Text(
+                                  perusahaan.perusahaan,
+                                  style: const TextStyle(
+                                      fontFamily: 'DMSans',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/profil/edit_pengalaman');
-                                },
+                                subtitle: Text(
+                                  '${perusahaan.posisi}\n${perusahaan.tglMulai}$tahun',
+                                  style: const TextStyle(
+                                      fontFamily: 'DMSans', fontSize: 12),
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.border_color_outlined,
+                                    color: Colors.orange,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/profil/edit_pengalaman');
+                                  },
+                                ),
                               ),
-                            ),
-                            Divider(
-                              thickness: 1.5,
-                              color: Colors.grey[300],
-                              indent: 16,
-                              endIndent: 16,
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       }),
                     ),

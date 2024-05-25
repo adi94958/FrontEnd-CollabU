@@ -36,10 +36,10 @@ class _ProfilPageState extends State<ProfilPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(249, 249, 249, 255),
-        body: SingleChildScrollView(
-          child: users.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
+        body: users.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
                   children: [
                     const ProfilAtas(),
                     const SizedBox(height: 20),
@@ -65,7 +65,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     const SizedBox(height: 50),
                   ],
                 ),
-        ),
+              ),
       ),
     );
   }
