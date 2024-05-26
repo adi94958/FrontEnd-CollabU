@@ -1,7 +1,8 @@
 import 'package:collab_u/model/home/lowongan.dart';
 import 'package:collab_u/services/loading_shimer_lowongan.dart';
-import 'package:collab_u/services/manajemen_lamaran_api.dart';
+import 'package:collab_u/services/manajemen_lowongan_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Lamaran extends StatefulWidget {
   const Lamaran({super.key});
@@ -115,6 +116,8 @@ class _LamaranState extends State<Lamaran> {
                             lowongan.posisi,
                             lowongan.kompetisi,
                             lowongan.tglPosting,
+                            lowongan.status,
+                            lowongan.idLowongan,
                           );
                         }).toList(),
                       );
@@ -134,10 +137,16 @@ class _LamaranState extends State<Lamaran> {
     String posisi,
     String kompetisi,
     String tglPosting,
+    String status,
+    int idLowongan,
   ) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/lamaran/manajemen_lamaran/');
+        Navigator.pushNamed(
+          context,
+          '/lamaran/manajemen_lamaran',
+          arguments: idLowongan,
+        );
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),
@@ -145,57 +154,77 @@ class _LamaranState extends State<Lamaran> {
           color: Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      posisi,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF150A33),
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      kompetisi,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF524B6B),
-                        fontSize: 12,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    Text(
-                      calculateTimeAgo(tglPosting),
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF94929B),
-                        fontSize: 10,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
+            Container(
+              // color: Colors.black,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(top: 5, right: 15),
+              child: Text(
+                status.toLowerCase() == 'buka' ? 'Buka' : 'Tutup',
+                style: TextStyle(
+                  color: status.toLowerCase() == 'buka'
+                      ? Colors.green
+                      : Colors.red,
+                  fontSize: 12,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.centerRight,
-                height: 60,
-                // color: Colors.amber,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Image.asset('assets/images/arrow-right.png'),
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20, left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          posisi,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF150A33),
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          kompetisi,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF524B6B),
+                            fontSize: 12,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        Text(
+                          calculateTimeAgo(tglPosting),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF94929B),
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    height: 60,
+                    // color: Colors.amber,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Image.asset('assets/images/arrow-right.png'),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

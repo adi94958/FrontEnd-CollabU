@@ -16,6 +16,7 @@ class Lowongan {
   List<Angkatan> angkatan;
   String nama;
   String prodi_perekrut;
+  String status;
 
   Lowongan({
     required this.idLowongan,
@@ -31,6 +32,7 @@ class Lowongan {
     required this.angkatan,
     required this.nama,
     required this.prodi_perekrut,
+    required this.status,
   });
 
   factory Lowongan.fromJson(Map<String, dynamic> json) {
@@ -41,8 +43,8 @@ class Lowongan {
       kompetisi: json['kompetisi'],
       deskripsiKerja: json['deskripsi_kerja'],
       idPengguna: json['id_pengguna'],
-      tglPosting: json['tgl_posting'],
-      tglEdit: json['tgl_edit'],
+      tglPosting: json['created_at'],
+      tglEdit: json['updated_at'],
       jurusan:
           List<Jurusan>.from(json['jurusan'].map((x) => Jurusan.fromJson(x))),
       prodi: List<Prodi>.from(json['prodi'].map((x) => Prodi.fromJson(x))),
@@ -50,6 +52,7 @@ class Lowongan {
           json['angkatan'].map((x) => Angkatan.fromJson(x))),
       nama: json['pengguna']['nama_lengkap'],
       prodi_perekrut: json['pengguna']['prodi']['nama_prodi'],
+      status: json['status'],
     );
   }
 }
