@@ -75,7 +75,7 @@ class _PrestasiWidgetState extends State<PrestasiWidget> {
                   height: widget.prestasiData.isNotEmpty
                       ? widget.prestasiData.length > 3
                           ? 70 * 3
-                          : 70 * widget.prestasiData.length.toDouble()
+                          : 80 * widget.prestasiData.length.toDouble()
                       : 0,
                   width: 335,
                   child: SingleChildScrollView(
