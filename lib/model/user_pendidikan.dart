@@ -1,9 +1,16 @@
+import 'package:collab_u/model/user_jurusan.dart';
+import 'package:collab_u/model/user_prodi.dart';
+
 class UserPendidikan {
-  final int id;
-  final int idProfil;
-  final int idJurusan;
-  final int idProdi;
-  final String tahunMasuk;
+  int id;
+  int idProfil;
+  int idJurusan;
+  int idProdi;
+  String tahunMasuk;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  UserProdi prodi;
+  UserJurusan jurusan;
 
   UserPendidikan({
     required this.id,
@@ -11,15 +18,23 @@ class UserPendidikan {
     required this.idJurusan,
     required this.idProdi,
     required this.tahunMasuk,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.prodi,
+    required this.jurusan,
   });
 
   factory UserPendidikan.fromJson(Map<String, dynamic> json) {
     return UserPendidikan(
-      id: json['id'] ?? '',
-      idProfil: json['id_profil'] ?? '',
-      idJurusan: json['id_jurusan'] ?? '',
-      idProdi: json['id_prodi'] ?? '',
+      id: json['id'] ?? 0,
+      idProfil: json['id_profil'] ?? 0,
+      idJurusan: json['id_jurusan'] ?? 0,
+      idProdi: json['id_prodi'] ?? 0,
       tahunMasuk: json['tahun_masuk'] ?? '',
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      prodi: UserProdi.fromJson(json['prodi'] ?? {}),
+      jurusan: UserJurusan.fromJson(json['jurusan'] ?? {}),
     );
   }
 }
