@@ -75,7 +75,7 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
                   height: widget.pengalamanData.isNotEmpty
                       ? widget.pengalamanData.length > 3
                           ? 70 * 3
-                          : 70 * widget.pengalamanData.length.toDouble()
+                          : 80 * widget.pengalamanData.length.toDouble()
                       : 0,
                   width: 335,
                   child: SingleChildScrollView(

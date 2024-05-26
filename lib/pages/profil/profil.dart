@@ -36,12 +36,17 @@ class _ProfilPageState extends State<ProfilPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(249, 249, 249, 255),
-        body: users.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
+        body: Stack(
+          children: [
+            if (users.isEmpty)
+              const Center(child: CircularProgressIndicator())
+            else
+              SingleChildScrollView(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top +
+                        175), // Tambahkan margin top
                 child: Column(
                   children: [
-                    const ProfilAtas(),
                     const SizedBox(height: 20),
                     Center(
                       child: Column(
@@ -59,13 +64,22 @@ class _ProfilPageState extends State<ProfilPage> {
                           const ResumeWidget(),
                           const SizedBox(height: 20),
                           const LogoutWidget(),
+                          const SizedBox(height: 50),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 50),
                   ],
                 ),
               ),
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child:
+                  ProfilAtas(), // Widget ProfilAtas akan tetap berada di atas
+            ),
+          ],
+        ),
       ),
     );
   }
