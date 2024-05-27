@@ -13,5 +13,13 @@ void main() {
     debugShowCheckedModeBanner: false,
     initialRoute: AppPage.getSplashScreen(),
     getPages: AppPage.routes,
+    theme: ThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+        errorStyle: TextStyle(
+          fontSize: 14, // Adjust the font size as needed
+          fontFamily: 'DMSans', // Ensure it matches your desired font
+        ),
+      ),
+    ),
   ));
 }

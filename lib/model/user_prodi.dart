@@ -2,8 +2,8 @@ class UserProdi {
   int idProdi;
   int idJurusan;
   String namaProdi;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
 
   UserProdi({
     required this.idProdi,
@@ -18,8 +18,8 @@ class UserProdi {
       idProdi: json['id_prodi'] ?? 0,
       idJurusan: json['id_jurusan'] ?? 0,
       namaProdi: json['nama_prodi'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }
