@@ -1,17 +1,22 @@
+import 'package:collab_u/model/user_pendidikan.dart';
 import 'package:flutter/material.dart';
 
-List<Map<String, String>> dataJurusan = [
-  {
-    'Jurusan': 'Teknik Komputer dan Informatika',
-    'programStudi': 'D3 - Teknik Informatika',
-    'tahunMasuk': '2022',
-  }
-];
+class JurusanWidget extends StatefulWidget {
+  final List<UserPendidikan> dataPendidikan;
+  const JurusanWidget({super.key, required this.dataPendidikan});
 
-class JurusanWidget extends StatelessWidget {
-  const JurusanWidget({
-    super.key,
-  });
+  @override
+  _JurusanWidgetState createState() => _JurusanWidgetState();
+}
+
+class _JurusanWidgetState extends State<JurusanWidget> {
+  late List<UserPendidikan> dataJurusan;
+
+  @override
+  void initState() {
+    super.initState();
+    dataJurusan = widget.dataPendidikan;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +93,7 @@ class JurusanWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dataJurusan[0]['Jurusan']!,
+                        dataJurusan[0].jurusan.namaJurusan,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 14,
@@ -99,14 +104,14 @@ class JurusanWidget extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        dataJurusan[0]['programStudi']!,
+                        dataJurusan[0].prodi.namaProdi,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,
                         ),
                       ),
                       Text(
-                        'Angkatan ${dataJurusan[0]['tahunMasuk']}',
+                        'Angkatan ${dataJurusan[0].tahunMasuk}',
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,
