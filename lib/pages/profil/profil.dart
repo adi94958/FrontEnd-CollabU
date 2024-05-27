@@ -55,7 +55,9 @@ class _ProfilPageState extends State<ProfilPage> {
                           const SizedBox(height: 20),
                           PengalamanWidget(pengalamanData: users[0].pengalaman),
                           const SizedBox(height: 20),
-                          const JurusanWidget(),
+                          JurusanWidget(
+                            dataPendidikan: users[0].pendidikan,
+                          ),
                           const SizedBox(height: 20),
                           KeahlianWidget(dataKeahlian: users[0].keahlian),
                           const SizedBox(height: 20),
