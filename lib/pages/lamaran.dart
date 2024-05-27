@@ -1,4 +1,8 @@
+import 'package:collab_u/model/home/lowongan.dart';
+import 'package:collab_u/services/loading_shimer_lowongan.dart';
+import 'package:collab_u/services/manajemen_lowongan_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Lamaran extends StatefulWidget {
   const Lamaran({super.key});
@@ -8,6 +12,21 @@ class Lamaran extends StatefulWidget {
 }
 
 class _LamaranState extends State<Lamaran> {
+  String calculateTimeAgo(String dateString) {
+    final DateTime date = DateTime.parse(dateString);
+    final Duration difference = DateTime.now().difference(date);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} Hari yang lalu';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} Jam yang lalu';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} Menit yang lalu';
+    } else {
+      return 'Baru saja';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,55 +35,54 @@ class _LamaranState extends State<Lamaran> {
         toolbarHeight: 90,
         title: Container(
           child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RichText(
-                          textAlign: TextAlign.right,
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.bold,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: 'Collab',
-                                style: TextStyle(
-                                  color: Color(0xFF120A8F),
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'U',
-                                style: TextStyle(
-                                  color: Color(0xFFF1801B),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Text(
-                        'Manajemen Lowongan Saya',
+                  Expanded(
+                    child: RichText(
+                      textAlign: TextAlign.right,
+                      text: TextSpan(
                         style: TextStyle(
-                          color: Color(0xFF150B3D),
-                          fontSize: 20,
+                          fontSize: 15.0,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                         ),
+                        children: [
+                          TextSpan(
+                            text: 'Collab',
+                            style: TextStyle(
+                              color: Color(0xFF120A8F),
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'U',
+                            style: TextStyle(
+                              color: Color(0xFFF1801B),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  
                 ],
               ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Text(
+                    'Manajemen Lowongan Saya',
+                    style: TextStyle(
+                      color: Color(0xFF150B3D),
+                      fontSize: 20,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       backgroundColor: Color(0xFFF6F5F5),
@@ -75,18 +93,37 @@ class _LamaranState extends State<Lamaran> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
-                daftarLowonganSaya(),
+                FutureBuilder<List<Lowongan>>(
+                  future: ManajemenLowonganService.fetchManajemenLowongans(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Column(
+                        children: List.generate(
+                          snapshot.data?.length ?? 7,
+                          (index) => buildJobItemPlaceholderShimmer(),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      print('Error: ${snapshot.error}');
+                      return Center(child: Text('Failed to load data'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No data available'));
+                    } else {
+                      return Column(
+                        children: snapshot.data!.map((lowongan) {
+                          return daftarLowonganSaya(
+                            context,
+                            lowongan.posisi,
+                            lowongan.kompetisi,
+                            lowongan.tglPosting,
+                            lowongan.status,
+                            lowongan.idLowongan,
+                          );
+                        }).toList(),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -95,10 +132,21 @@ class _LamaranState extends State<Lamaran> {
     );
   }
 
-  Widget daftarLowonganSaya() {
+  Widget daftarLowonganSaya(
+    BuildContext context,
+    String posisi,
+    String kompetisi,
+    String tglPosting,
+    String status,
+    int idLowongan,
+  ) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/lamaran/manajemen_lamaran/');
+        Navigator.pushNamed(
+          context,
+          '/lamaran/manajemen_lamaran',
+          arguments: idLowongan,
+        );
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),
@@ -106,57 +154,77 @@ class _LamaranState extends State<Lamaran> {
           color: Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'UI / UX Designer',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF150A33),
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Pekan Kreatifitas Mahasiswa',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF524B6B),
-                        fontSize: 12,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    Text(
-                      '2 Hari yang lalu',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Color(0xFF94929B),
-                        fontSize: 10,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
+            Container(
+              // color: Colors.black,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(top: 5, right: 15),
+              child: Text(
+                status.toLowerCase() == 'buka' ? 'Buka' : 'Tutup',
+                style: TextStyle(
+                  color: status.toLowerCase() == 'buka'
+                      ? Colors.green
+                      : Colors.red,
+                  fontSize: 12,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.centerRight,
-                height: 60,
-                // color: Colors.amber,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Image.asset('assets/images/arrow-right.png'),
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20, left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          posisi,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF150A33),
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          kompetisi,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF524B6B),
+                            fontSize: 12,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        Text(
+                          calculateTimeAgo(tglPosting),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color(0xFF94929B),
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    height: 60,
+                    // color: Colors.amber,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Image.asset('assets/images/arrow-right.png'),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
