@@ -4,8 +4,8 @@ class UserJurusan {
   int idJurusan;
   int idPt;
   String namaJurusan;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
   UserPerguruanTinggi perguruanTinggi;
 
   UserJurusan({
@@ -22,8 +22,8 @@ class UserJurusan {
       idJurusan: json['id_jurusan'] ?? 0,
       idPt: json['id_pt'] ?? 0,
       namaJurusan: json['nama_jurusan'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
       perguruanTinggi:
           UserPerguruanTinggi.fromJson(json['perguruan_tinggi'] ?? {}),
     );

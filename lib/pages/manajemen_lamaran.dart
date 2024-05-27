@@ -4,11 +4,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class ManajemenLamaran extends StatefulWidget {
-  final int idLowongan;
+  // final int idLowongan;
 
   const ManajemenLamaran({
     super.key,
-    required this.idLowongan,
+    // required this.idLowongan,
   });
 
   @override

@@ -5,8 +5,8 @@ class UserPengalaman {
   String tglSelesai;
   String posisi;
   String perusahaan;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
 
   UserPengalaman({
     required this.id,
@@ -27,8 +27,8 @@ class UserPengalaman {
       tglSelesai: json['tgl_selesai'] ?? '',
       posisi: json['posisi'] ?? '',
       perusahaan: json['perusahaan'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }

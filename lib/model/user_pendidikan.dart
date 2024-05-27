@@ -7,8 +7,8 @@ class UserPendidikan {
   int idJurusan;
   int idProdi;
   String tahunMasuk;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
   UserProdi prodi;
   UserJurusan jurusan;
 
@@ -31,8 +31,8 @@ class UserPendidikan {
       idJurusan: json['id_jurusan'] ?? 0,
       idProdi: json['id_prodi'] ?? 0,
       tahunMasuk: json['tahun_masuk'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
       prodi: UserProdi.fromJson(json['prodi'] ?? {}),
       jurusan: UserJurusan.fromJson(json['jurusan'] ?? {}),
     );

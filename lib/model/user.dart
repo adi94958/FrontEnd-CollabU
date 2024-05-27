@@ -10,8 +10,8 @@ class User {
   int idPt;
   int idJurusan;
   int idProdi;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
 
   User({
     required this.idPengguna,
@@ -42,8 +42,8 @@ class User {
       idPt: json['id_pt'] ?? 0,
       idJurusan: json['id_jurusan'] ?? 0,
       idProdi: json['id_prodi'] ?? 0,
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }
