@@ -5,8 +5,8 @@ class UserPrestasi {
   String kategori;
   int tahun;
   String deskripsi;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
 
   UserPrestasi({
     required this.id,
@@ -27,8 +27,8 @@ class UserPrestasi {
       kategori: json['kategori'] ?? '',
       tahun: json['tahun'] ?? 0,
       deskripsi: json['deskripsi'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }

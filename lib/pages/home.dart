@@ -2,10 +2,9 @@ import 'package:collab_u/model/home/angkatan.dart';
 import 'package:collab_u/model/home/jurusan.dart';
 import 'package:collab_u/model/home/lowongan.dart';
 import 'package:collab_u/model/home/prodi.dart';
-import 'package:collab_u/services/loading_shimer_lowongan.dart';
+import 'package:collab_u/services/component/loading_shimer_lowongan.dart';
 import 'package:collab_u/services/lowongan_api.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

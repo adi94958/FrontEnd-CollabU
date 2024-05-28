@@ -9,8 +9,8 @@ class UserProfile {
   int idPengguna;
   String tentangSaya;
   String resume;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String createdAt;
+  String updatedAt;
   User pengguna;
   List<UserPendidikan> pendidikan;
   List<UserPrestasi> prestasi;
@@ -37,8 +37,8 @@ class UserProfile {
       idPengguna: json['id_pengguna'] ?? 0,
       tentangSaya: json['tentang_saya'] ?? '',
       resume: json['resume'] ?? '',
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
       pengguna: User.fromJson(json['pengguna'] ?? {}),
       pendidikan: (json['pendidikan'] as List<dynamic>?)
               ?.map((item) => UserPendidikan.fromJson(item))
