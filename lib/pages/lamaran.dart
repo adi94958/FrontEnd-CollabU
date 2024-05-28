@@ -1,6 +1,6 @@
 import 'package:collab_u/model/home/lowongan.dart';
-import 'package:collab_u/services/loading_shimer_lowongan.dart';
-import 'package:collab_u/services/manajemen_lowongan_api.dart';
+import 'package:collab_u/services/component/loading_shimer_lowongan.dart';
+import 'package:collab_u/services/lamaran_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -94,7 +94,7 @@ class _LamaranState extends State<Lamaran> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 FutureBuilder<List<Lowongan>>(
-                  future: ManajemenLowonganService.fetchManajemenLowongans(),
+                  future: LamaranService.fetchLamaran(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Column(

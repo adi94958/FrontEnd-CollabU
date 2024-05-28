@@ -1,21 +1,21 @@
+import 'package:collab_u/model/home/pelamar.dart';
+import 'package:collab_u/services/manajemen_lamaran_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class ManajemenLamaran extends StatefulWidget {
-  // final int idLowongan;
+  final int idLowongan;
 
-  const ManajemenLamaran({
-    super.key,
-    // required this.idLowongan,
-  });
+  const ManajemenLamaran({Key? key, required this.idLowongan})
+      : super(key: key);
 
   @override
-  State<ManajemenLamaran> createState() => _ManajemenLamaran();
+  _ManajemenLamaranState createState() => _ManajemenLamaranState();
 }
 
-class _ManajemenLamaran extends State<ManajemenLamaran>
+class _ManajemenLamaranState extends State<ManajemenLamaran>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -91,10 +91,9 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
                       ),
                     ),
                     Padding(
-                      // Widget Text tambahan di bawah 'UI/UX Designer'
                       padding: EdgeInsets.only(left: 10, bottom: 10),
                       child: Text(
-                        'Pekan Kreatifitas Mahasiswa',
+                        'Hackathon Nasional 2024',
                         style: TextStyle(
                           color: Color(0xFF524B6B),
                           fontSize: 12,
@@ -167,18 +166,30 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            itemPelamar(),
-                            itemPelamar(),
-                            itemPelamar(),
-                            itemPelamar(),
-                            itemPelamar(),
-                            itemPelamar(),
-                          ],
-                        ),
+                      FutureBuilder<List<Pelamar>>(
+                        future: ManajemenLamaranService.fetchManajemenLamaran(
+                            widget.idLowongan),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(child: Text('No data available'));
+                          } else {
+                            return SingleChildScrollView(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: snapshot.data!
+                                    .map((pelamar) => itemPelamar(pelamar))
+                                    .toList(),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       SingleChildScrollView(
                         padding: EdgeInsets.all(10),
@@ -332,7 +343,7 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
     );
   }
 
-  Widget itemPelamar() {
+  Widget itemPelamar(Pelamar pelamar) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -359,7 +370,7 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(bottom: 20),
+            margin: EdgeInsets.only(bottom: 20),
             child: Theme(
               data: ThemeData(
                 dividerColor: Colors.transparent,
@@ -370,11 +381,11 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
                 title: Row(
                   children: [
                     RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Muhammad Adi Saputera\n',
-                          style: TextStyle(
+                          text: '${pelamar.pengguna.namaLengkap}\n',
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Colors.black, // Warna teks
@@ -386,7 +397,7 @@ class _ManajemenLamaran extends State<ManajemenLamaran>
                                   20), // Menambahkan jarak vertical antara dua teks
                         ),
                         TextSpan(
-                          text: 'D3 Teknik Informatika',
+                          text: "D3 - Teknik Informatika",
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.black, // Warna teks
