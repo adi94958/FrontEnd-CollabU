@@ -2,7 +2,7 @@ import 'package:collab_u/model/user_keahlian.dart';
 import 'package:flutter/material.dart';
 
 class KeahlianWidget extends StatefulWidget {
-  final List<UserKeahlian> dataKeahlian;
+  final List<UserKeahlian>? dataKeahlian;
 
   const KeahlianWidget({
     Key? key,
@@ -14,10 +14,18 @@ class KeahlianWidget extends StatefulWidget {
 }
 
 class _KeahlianWidgetState extends State<KeahlianWidget> {
+  late List<UserKeahlian>? dataKeahlian;
+
+  @override
+  void initState() {
+    dataKeahlian = widget.dataKeahlian;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.dataKeahlian.isNotEmpty ? 200 : 70,
+      height: dataKeahlian!.isNotEmpty ? 200 : 70,
       width: 335,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -51,7 +59,7 @@ class _KeahlianWidgetState extends State<KeahlianWidget> {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: widget.dataKeahlian.isNotEmpty
+                  icon: dataKeahlian!.isNotEmpty
                       ? const Icon(Icons.border_color_outlined)
                       : const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
@@ -61,7 +69,7 @@ class _KeahlianWidgetState extends State<KeahlianWidget> {
             ),
           ),
           // Check if ringkasan is not empty, if not, display Divider and Container
-          if (widget.dataKeahlian.isNotEmpty)
+          if (dataKeahlian!.isNotEmpty)
             Column(
               children: [
                 const Divider(
@@ -77,10 +85,10 @@ class _KeahlianWidgetState extends State<KeahlianWidget> {
                 Container(
                   color: Colors.white,
                   width: 280,
-                  height: widget.dataKeahlian.isNotEmpty ? 164 - 60 : 0,
+                  height: dataKeahlian!.isNotEmpty ? 164 - 60 : 0,
                   child: SingleChildScrollView(
                     child: Wrap(
-                      children: widget.dataKeahlian.map((skill) {
+                      children: dataKeahlian!.map((skill) {
                         return Container(
                           padding: const EdgeInsets.all(8.0),
                           margin: const EdgeInsets.all(4.0),
@@ -90,7 +98,7 @@ class _KeahlianWidgetState extends State<KeahlianWidget> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Text(
-                            skill.keahlian,
+                            skill.keahlian!,
                             style: const TextStyle(fontFamily: 'DMSans'),
                           ),
                         );

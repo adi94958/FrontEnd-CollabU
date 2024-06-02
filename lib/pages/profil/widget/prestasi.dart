@@ -2,7 +2,7 @@ import 'package:collab_u/model/user_prestasi.dart';
 import 'package:flutter/material.dart';
 
 class PrestasiWidget extends StatefulWidget {
-  final List<UserPrestasi> prestasiData;
+  final List<UserPrestasi>? prestasiData;
 
   const PrestasiWidget({
     Key? key,
@@ -14,13 +14,20 @@ class PrestasiWidget extends StatefulWidget {
 }
 
 class _PrestasiWidgetState extends State<PrestasiWidget> {
+  late List<UserPrestasi>? prestasi;
+  @override
+  void initState() {
+    prestasi = widget.prestasiData;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.prestasiData.isNotEmpty
-          ? widget.prestasiData.length > 3
+      height: prestasi!.isNotEmpty
+          ? prestasi!.length > 3
               ? 70 * 3 + 100
-              : 70 * widget.prestasiData.length.toDouble() + 100
+              : 70 * prestasi!.length.toDouble() + 100
           : 70,
       width: 335,
       decoration: BoxDecoration(
@@ -68,21 +75,21 @@ class _PrestasiWidgetState extends State<PrestasiWidget> {
             ),
           ),
           // Check if prestasiData is not empty, if not, display Divider and Container
-          if (widget.prestasiData.isNotEmpty)
+          if (prestasi!.isNotEmpty)
             Column(
               children: [
                 SizedBox(
-                  height: widget.prestasiData.isNotEmpty
-                      ? widget.prestasiData.length > 3
+                  height: prestasi!.isNotEmpty
+                      ? prestasi!.length > 3
                           ? 70 * 3
-                          : 80 * widget.prestasiData.length.toDouble()
+                          : 80 * prestasi!.length.toDouble()
                       : 0,
                   width: 335,
                   child: SingleChildScrollView(
                     child: Column(
-                      children:
-                          List.generate(widget.prestasiData.length, (index) {
-                        final kompetisi = widget.prestasiData[index];
+                      children: List.generate(prestasi!.length, (index) {
+                        final kompetisi = prestasi![index];
+                        final String? penghargaan = kompetisi.namaPenghargaan;
                         return Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Column(
@@ -99,7 +106,7 @@ class _PrestasiWidgetState extends State<PrestasiWidget> {
                               ),
                               ListTile(
                                 title: Text(
-                                  kompetisi.namaPenghargaan,
+                                  penghargaan!,
                                   style: const TextStyle(
                                       fontFamily: 'DMSans',
                                       fontSize: 14,

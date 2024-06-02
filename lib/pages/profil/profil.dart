@@ -1,3 +1,4 @@
+import 'package:collab_u/bloc/ProfileBloc/profile_bloc.dart';
 import 'package:collab_u/model/user_profile.dart';
 import 'package:collab_u/pages/profil/widget/jurusan.dart';
 import 'package:collab_u/pages/profil/widget/keahlian.dart';
@@ -5,8 +6,8 @@ import 'package:collab_u/pages/profil/widget/pengalaman.dart';
 import 'package:collab_u/pages/profil/widget/prestasi.dart';
 import 'package:collab_u/pages/profil/widget/profil_atas.dart';
 import 'package:collab_u/pages/profil/widget/ringkasan.dart';
-import 'package:collab_u/services/user_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -16,19 +17,10 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  List<UserProfile> users = [];
-
   @override
   void initState() {
+    context.read<ProfileBloc>().add(GetProfile());
     super.initState();
-    fetchUser();
-  }
-
-  Future<void> fetchUser() async {
-    final response = await UserApi.fetchUsers();
-    setState(() {
-      users = response;
-    });
   }
 
   @override
@@ -36,53 +28,87 @@ class _ProfilPageState extends State<ProfilPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(249, 249, 249, 255),
-        body: Stack(
-          children: [
-            if (users.isEmpty)
-              const Center(child: CircularProgressIndicator())
-            else
-              SingleChildScrollView(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top +
-                        175), // Tambahkan margin top
+        body: BlocListener<ProfileBloc, ProfileState>(
+          listener: (context, state) {},
+          child:
+              BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ProfileLoaded) {
+              final userProfile = state.userProfile;
+              return ProfileWidget(userProfile: userProfile);
+            } else {
+              return const Center(child: Text('Failed to load profile'));
+            }
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileWidget extends StatelessWidget {
+  const ProfileWidget({
+    super.key,
+    required this.userProfile,
+  });
+
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + 175,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Center(
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Column(
-                        children: [
-                          RingkasanWidget(tentangSaya: users[0].tentangSaya),
-                          const SizedBox(height: 20),
-                          PengalamanWidget(pengalamanData: users[0].pengalaman),
-                          const SizedBox(height: 20),
-                          JurusanWidget(
-                            dataPendidikan: users[0].pendidikan,
-                          ),
-                          const SizedBox(height: 20),
-                          KeahlianWidget(dataKeahlian: users[0].keahlian),
-                          const SizedBox(height: 20),
-                          PrestasiWidget(prestasiData: users[0].prestasi),
-                          const SizedBox(height: 20),
-                          const ResumeWidget(),
-                          const SizedBox(height: 20),
-                          const LogoutWidget(),
-                          const SizedBox(height: 50),
-                        ],
-                      ),
+                    RingkasanWidget(
+                      tentangSaya: userProfile.tentangSaya,
                     ),
+                    const SizedBox(height: 20),
+                    PengalamanWidget(
+                      pengalamanData: userProfile.pengalaman,
+                    ),
+                    const SizedBox(height: 20),
+                    JurusanWidget(
+                      dataPendidikan: userProfile.pendidikan,
+                    ),
+                    const SizedBox(height: 20),
+                    KeahlianWidget(
+                      dataKeahlian: userProfile.keahlian,
+                    ),
+                    const SizedBox(height: 20),
+                    PrestasiWidget(
+                      prestasiData: userProfile.prestasi,
+                    ),
+                    const SizedBox(height: 20),
+                    const ResumeWidget(),
+                    const SizedBox(height: 20),
+                    const LogoutWidget(),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child:
-                  ProfilAtas(), // Widget ProfilAtas akan tetap berada di atas
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: ProfilAtas(
+            user: userProfile.pengguna,
+            pendidikan: userProfile.pendidikan,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,25 +1,32 @@
 class UserProdi {
-  int idProdi;
-  int idJurusan;
-  String namaProdi;
-  String createdAt;
-  String updatedAt;
+  int? idProdi;
+  int? idJurusan;
+  String? namaProdi;
+  String? createdAt;
+  String? updatedAt;
 
-  UserProdi({
-    required this.idProdi,
-    required this.idJurusan,
-    required this.namaProdi,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+  UserProdi(
+      {this.idProdi,
+      this.idJurusan,
+      this.namaProdi,
+      this.createdAt,
+      this.updatedAt});
 
-  factory UserProdi.fromJson(Map<String, dynamic> json) {
-    return UserProdi(
-      idProdi: json['id_prodi'] ?? 0,
-      idJurusan: json['id_jurusan'] ?? 0,
-      namaProdi: json['nama_prodi'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
-    );
+  UserProdi.fromJson(Map<String, dynamic> json) {
+    idProdi = json['id_prodi'];
+    idJurusan = json['id_jurusan'];
+    namaProdi = json['nama_prodi'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id_prodi'] = idProdi;
+    data['id_jurusan'] = idJurusan;
+    data['nama_prodi'] = namaProdi;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
   }
 }

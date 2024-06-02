@@ -2,7 +2,7 @@ import 'package:collab_u/model/user_pengalaman.dart';
 import 'package:flutter/material.dart';
 
 class PengalamanWidget extends StatefulWidget {
-  final List<UserPengalaman> pengalamanData;
+  final List<UserPengalaman>? pengalamanData;
 
   const PengalamanWidget({
     Key? key,
@@ -14,13 +14,21 @@ class PengalamanWidget extends StatefulWidget {
 }
 
 class _PengalamanWidgetState extends State<PengalamanWidget> {
+  late List<UserPengalaman>? pengalaman;
+
+  @override
+  void initState() {
+    pengalaman = widget.pengalamanData;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.pengalamanData.isNotEmpty
-          ? widget.pengalamanData.length > 3
+      height: pengalaman!.isNotEmpty
+          ? pengalaman!.length > 3
               ? 70 * 3 + 100
-              : 70 * widget.pengalamanData.length.toDouble() + 100
+              : 70 * pengalaman!.length.toDouble() + 100
           : 70,
       width: 335,
       decoration: BoxDecoration(
@@ -68,22 +76,22 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
             ),
           ),
           // Check if pengalamanData is not empty, if not, display Divider and Container
-          if (widget.pengalamanData.isNotEmpty)
+          if (pengalaman!.isNotEmpty)
             Column(
               children: [
                 SizedBox(
-                  height: widget.pengalamanData.isNotEmpty
-                      ? widget.pengalamanData.length > 3
+                  height: pengalaman!.isNotEmpty
+                      ? pengalaman!.length > 3
                           ? 70 * 3
-                          : 80 * widget.pengalamanData.length.toDouble()
+                          : 80 * pengalaman!.length.toDouble()
                       : 0,
                   width: 335,
                   child: SingleChildScrollView(
                     child: Column(
-                      children:
-                          List.generate(widget.pengalamanData.length, (index) {
-                        final perusahaan = widget.pengalamanData[index];
+                      children: List.generate(pengalaman!.length, (index) {
+                        final perusahaan = pengalaman![index];
                         final tahunBerakhir = perusahaan.tglSelesai;
+                        final String? namaPerusahaan = perusahaan.perusahaan;
                         final String tahun = ' - $tahunBerakhir';
                         return Padding(
                           padding: const EdgeInsets.only(left: 10),
@@ -101,7 +109,7 @@ class _PengalamanWidgetState extends State<PengalamanWidget> {
                               ),
                               ListTile(
                                 title: Text(
-                                  perusahaan.perusahaan,
+                                  namaPerusahaan!,
                                   style: const TextStyle(
                                       fontFamily: 'DMSans',
                                       fontSize: 14,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RingkasanWidget extends StatefulWidget {
-  final String tentangSaya;
+  final String? tentangSaya;
 
   const RingkasanWidget({
     Key? key,
@@ -15,9 +15,9 @@ class RingkasanWidget extends StatefulWidget {
 class _RingkasanWidgetState extends State<RingkasanWidget> {
   @override
   Widget build(BuildContext context) {
-    String tentangSaya = widget.tentangSaya;
+    String? tentangSaya = widget.tentangSaya;
     return Container(
-      height: tentangSaya.isNotEmpty ? 169 : 70,
+      height: tentangSaya != null ? 169 : 70,
       width: 335,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -56,7 +56,7 @@ class _RingkasanWidgetState extends State<RingkasanWidget> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/profil/tambah_ringkasan');
                   },
-                  icon: tentangSaya.isNotEmpty
+                  icon: tentangSaya != null
                       ? const Icon(Icons.border_color_outlined)
                       : const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
@@ -66,7 +66,7 @@ class _RingkasanWidgetState extends State<RingkasanWidget> {
             ),
           ),
           // Check if tentangSaya is not empty, if not, display Divider and Container
-          if (tentangSaya.isNotEmpty)
+          if (tentangSaya != null)
             Column(
               children: [
                 const Divider(
