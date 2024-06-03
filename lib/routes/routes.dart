@@ -30,7 +30,7 @@ class AppPage {
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
-    GetPage(name: postingan, page: () => const Postingan()),
+    GetPage(name: postingan, page: () => const TambahDeskripsi()),
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
     GetPage(name: daftar_lowongan, page: () => const DaftarLowongan()),
