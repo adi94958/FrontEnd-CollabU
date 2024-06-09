@@ -39,8 +39,4 @@ class UserJurusan {
     }
     return data;
   }
-
-  bool get isNotEmpty {
-    return idJurusan != 0;
-  }
 }

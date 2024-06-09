@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:collab_u/model/home/lowongan.dart';
 import 'package:collab_u/services/activity_services.dart';
+import 'package:collab_u/widgets/callculate_time_ago.dart';
 
 class Activity extends StatefulWidget {
   const Activity({Key? key}) : super(key: key);
@@ -358,63 +359,42 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
   Widget itemProses(Lowongan lowongan) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    child: RichText(
-                      text: const TextSpan(
-                        text: '1 Jam yang lalu', // Calculate time ago here
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Color(0xFFAAA6B9),
-                        ),
-                      ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lowongan.posisi,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      color: Color(0xFF150A33),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 10, left: 5),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${lowongan.posisi}\n',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        WidgetSpan(child: SizedBox(height: 20)),
-                        TextSpan(
-                          text: '${lowongan.kompetisi}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    lowongan.kompetisi,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      color: Color(0xFF524B6B),
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
                     ),
                   ),
-                ),
+                  TimeAgoText(lowongan.tglPosting),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),

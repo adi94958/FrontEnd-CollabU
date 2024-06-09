@@ -343,7 +343,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                   ),
                   TextSpan(
                     text:
-                        '${pelamarDitolak.pengguna.profil.pendidikan.prodi.namaProdi}',
+                        '${pelamarDitolak.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.black, // Warna teks
@@ -394,7 +394,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                       ),
                       TextSpan(
                         text:
-                            "${pelamarDiterima.pengguna.profil.pendidikan.prodi.namaProdi}",
+                            '${pelamarDiterima.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black, // Warna teks
@@ -483,7 +483,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                         ),
                         TextSpan(
                           text:
-                              "${pelamar.pengguna.profil.pendidikan.prodi.namaProdi}",
+                              '${pelamar.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.black, // Warna teks
@@ -540,11 +540,12 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                 WidgetSpan(
                                   child: SizedBox(height: 20),
                                 ),
-                                ...pelamar.pengguna.profil.pengalaman
+                                ...(pelamar.pengguna.profil.pengalaman ?? [])
                                     .asMap()
                                     .entries
                                     .map<InlineSpan>((entry) {
-                                  int idx = entry.key + 1; // Index mulai dari 1
+                                  int idx =
+                                      entry.key + 1; // Index starts from 1
                                   var pengalaman = entry.value;
                                   return TextSpan(
                                     text:
@@ -573,7 +574,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                       height:
                                           20), // Menambahkan jarak vertical antara dua teks
                                 ),
-                                ...pelamar.pengguna.profil.keahlian
+                                ...(pelamar.pengguna.profil.keahlian ?? [])
                                     .asMap()
                                     .entries
                                     .map<InlineSpan>((entry) {
@@ -605,7 +606,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                       height:
                                           20), // Menambahkan jarak vertical antara dua teks
                                 ),
-                                ...pelamar.pengguna.profil.prestasi
+                                ...(pelamar.pengguna.profil.prestasi ?? [])
                                     .asMap()
                                     .entries
                                     .map<InlineSpan>((entry) {
