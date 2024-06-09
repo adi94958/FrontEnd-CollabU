@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
-class TambahDeskripsi extends StatefulWidget {
-  const TambahDeskripsi({super.key});
+class TambahJurusanLowongan extends StatefulWidget {
+  const TambahJurusanLowongan({super.key});
 
   @override
-  State<TambahDeskripsi> createState() => _TambahDeskripsiState();
+  State<TambahJurusanLowongan> createState() => _TambahJurusanLowonganState();
 }
 
-class _TambahDeskripsiState extends State<TambahDeskripsi> {
+class _TambahJurusanLowonganState extends State<TambahJurusanLowongan> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController jobDeskController = TextEditingController();
-  final TextEditingController penjelasanController = TextEditingController();
-  final TextEditingController posisiController = TextEditingController();
-  final TextEditingController kompetisiController = TextEditingController();
+  final List<String> selectedJurusans = [];
+  final List<String> jurusanList = [
+    'Teknik Informatika',
+    'Sistem Informasi',
+    'Manajemen',
+    'Akuntansi',
+    // Add more options as needed
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
           backgroundColor: Colors.transparent,
           leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/navbar');
+              Navigator.pushReplacementNamed(context, '/tambah_deskripsi');
             },
             icon: const Icon(Icons.west_outlined),
           ),
@@ -36,7 +40,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
               children: [
                 const SizedBox(height: 15),
                 const Text(
-                  'Tambahkan Deskripsi',
+                  'Tambahkan Jurusan',
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'DMSans',
@@ -49,44 +53,39 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTextField(
-                        label: 'Kompetisi',
-                        controller: kompetisiController,
-                        hintText: 'Enter your text',
-                        height: 40,
+                      _buildDropdownField(
+                        label: 'Jurusan',
+                        items: jurusanList,
+                        value: null,
+                        onChanged: (String? newValue) {
+                          if (newValue != null &&
+                              !selectedJurusans.contains(newValue)) {
+                            setState(() {
+                              selectedJurusans.add(newValue);
+                            });
+                          }
+                        },
                       ),
-                      const SizedBox(height: 15),
-                      _buildTextField(
-                        label: 'Posisi',
-                        controller: posisiController,
-                        hintText: 'Enter your text',
-                        height: 40,
-                      ),
-                      const SizedBox(height: 15),
-                      _buildTextField(
-                        label: 'Penjelasan',
-                        controller: penjelasanController,
-                        hintText: 'Enter your text',
-                        maxLength: 200,
-                        maxLines: 8,
-                        minLines: 6,
-                      ),
-                      const SizedBox(height: 10), // Reduced height from 15 to 10
-                      _buildTextField(
-                        label: 'Job Desk',
-                        controller: jobDeskController,
-                        hintText: 'Enter your text',
-                        maxLength: 200,
-                        maxLines: 8,
-                        minLines: 6,
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 8.0,
+                        children: selectedJurusans.map((jurusan) {
+                          return Chip(
+                            label: Text(jurusan),
+                            onDeleted: () {
+                              setState(() {
+                                selectedJurusans.remove(jurusan);
+                              });
+                            },
+                          );
+                        }).toList(),
                       ),
                       const SizedBox(height: 10),
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.pushReplacementNamed(
-                                  context, '/navbar');
+                              Navigator.pushNamed(context, '/tambah_prodi');
                             }
                           },
                           style: ButtonStyle(
@@ -105,7 +104,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Selanjutnya',
+                              'SELANJUTNYA',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -126,14 +125,11 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildDropdownField({
     required String label,
-    required TextEditingController controller,
-    required String hintText,
-    double? height,
-    int? maxLength,
-    int? maxLines,
-    int? minLines,
+    required List<String> items,
+    required String? value,
+    required void Function(String?) onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,34 +143,31 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
           ),
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: height ?? 100,
-          width: double.infinity,
-          child: TextFormField(
-            controller: controller,
-            maxLength: maxLength,
-            maxLines: maxLines,
-            minLines: minLines,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
-              hintText: hintText,
-              counterText: '',
+        DropdownButtonFormField<String>(
+          value: value,
+          items: items.map((String item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(item),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            style: const TextStyle(
-              fontSize: 12,
-              fontFamily: 'DMSans',
-            ),
-            onChanged: (_) {
-              setState(() {});
-            },
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
           ),
+          validator: (value) {
+            if (selectedJurusans.isEmpty) {
+              return 'Please select at least one jurusan';
+            }
+            return null;
+          },
         ),
       ],
     );

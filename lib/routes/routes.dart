@@ -1,9 +1,10 @@
 import 'package:collab_u/pages/buat_lowongan/tambah_deskripsi.dart';
-import 'package:collab_u/pages/buat_lowongan/tambah_job_desk.dart';
-import 'package:collab_u/pages/buat_lowongan/tambah_kualifikasi.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_jurusan_lowongan.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_prodi_lowongan.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_tingkat_lowongan.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
-import 'package:collab_u/pages/postingan.dart';
+import 'package:collab_u/pages/buat_lowongan/postingan.dart';
 import 'package:collab_u/pages/profil/edit/edit_profil_page.dart';
 import 'package:collab_u/pages/profil/jurusan/edit_jurusan.dart';
 import 'package:collab_u/pages/profil/jurusan/tambah_jurusan.dart';
@@ -30,7 +31,11 @@ class AppPage {
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
-    GetPage(name: postingan, page: () => const TambahDeskripsi()),
+    GetPage(name: postingan, page: () => Postingan()),
+    GetPage(name: tambah_deskripsi, page: () => TambahDeskripsi()),
+    GetPage(name: tambah_jurusan_lowongan, page: () => TambahJurusanLowongan()),
+    GetPage(name: tambah_prodi_lowongan, page: () => const TambahProdiLowongan()),
+    GetPage(name: tambah_tingkat_lowongan, page: () => const TambahTingkatLowongan()),
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
     GetPage(name: daftar_lowongan, page: () => const DaftarLowongan()),
@@ -53,9 +58,6 @@ class AppPage {
     GetPage(name: edit_pengalaman, page: () => const EditPengalaman()),
     GetPage(name: tambah_jurusan, page: () => const TambahJurusan()),
     GetPage(name: edit_jurusan, page: () => const EditJurusan()),
-    GetPage(name: tambah_deskripsi, page: () => const TambahDeskripsi()),
-    GetPage(name: tambah_kualifikasi, page: () => const TambahKualifikasi()),
-    GetPage(name: tambah_job_desk, page: () => const TambahJobDesk()),
   ];
 
   static getSplashScreen() => splash;
@@ -79,8 +81,9 @@ class AppPage {
   static getEditPengalaman() => edit_pengalaman;
   static getEditJurusan() => edit_jurusan;
   static getTambahDeskripsi() => tambah_deskripsi;
-  static getTambahKualifikasi() => tambah_kualifikasi;
-  static getTambahJobDesk() => tambah_job_desk;
+  static getTambahJurusanLowongan() => tambah_jurusan_lowongan;
+  static getTambahProdiLowongan() => tambah_prodi_lowongan;
+  static getTambahTingkatLowongan() => tambah_tingkat_lowongan;
 
   static String splash = '/';
   static String start = '/start';
@@ -102,7 +105,8 @@ class AppPage {
   static String edit_prestasi = '/profil/edit_prestasi';
   static String edit_pengalaman = '/profil/edit_pengalaman';
   static String edit_jurusan = '/profil/edit_jurusan';
-  static String tambah_deskripsi = '/profil/tambah-deskripsi';
-  static String tambah_kualifikasi = '/profil/tambah-kualifikasi';
-  static String tambah_job_desk = '/profil/tambah-job-desk';
+  static String tambah_deskripsi = '/tambah_deskripsi';
+  static String tambah_jurusan_lowongan = '/tambah_jurusan';
+  static String tambah_prodi_lowongan = '/tambah_prodi';
+  static String tambah_tingkat_lowongan = '/tambah_tingkat';
 }
