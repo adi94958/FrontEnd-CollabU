@@ -2,7 +2,7 @@ import 'package:collab_u/model/user_pendidikan.dart';
 import 'package:flutter/material.dart';
 
 class JurusanWidget extends StatefulWidget {
-  final UserPendidikan dataPendidikan;
+  final UserPendidikan? dataPendidikan;
   const JurusanWidget({super.key, required this.dataPendidikan});
 
   @override
@@ -10,7 +10,7 @@ class JurusanWidget extends StatefulWidget {
 }
 
 class _JurusanWidgetState extends State<JurusanWidget> {
-  late UserPendidikan dataJurusan;
+  late UserPendidikan? dataJurusan;
 
   @override
   void initState() {
@@ -21,7 +21,7 @@ class _JurusanWidgetState extends State<JurusanWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: dataJurusan.isNotEmpty ? 169 : 70,
+      height: dataJurusan != null ? 169 : 70,
       width: 335,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -55,13 +55,13 @@ class _JurusanWidgetState extends State<JurusanWidget> {
                 ),
                 IconButton(
                   onPressed: () {
-                    dataJurusan.isNotEmpty
+                    dataJurusan != null
                         ? Navigator.pushNamed(
                             context, '/profil/edit_pengalaman')
                         : Navigator.pushNamed(
                             context, '/profil/tambah_pengalaman');
                   },
-                  icon: dataJurusan.isNotEmpty
+                  icon: dataJurusan != null
                       ? const Icon(Icons.border_color_outlined)
                       : const Icon(Icons.add_circle_outline),
                   color: Colors.orange,
@@ -71,7 +71,7 @@ class _JurusanWidgetState extends State<JurusanWidget> {
             ),
           ),
           // Check if dataJurusan is not empty, if not, display Divider and Container
-          if (dataJurusan.isNotEmpty)
+          if (dataJurusan != null)
             Column(
               children: [
                 const Divider(
@@ -87,13 +87,13 @@ class _JurusanWidgetState extends State<JurusanWidget> {
                 Container(
                   color: Colors.white,
                   width: 280,
-                  height: dataJurusan.isNotEmpty ? 164 - 85 : 0,
+                  height: dataJurusan != null ? 164 - 85 : 0,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dataJurusan.jurusan.namaJurusan,
+                        dataJurusan!.jurusan!.namaJurusan!,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 14,
@@ -104,14 +104,14 @@ class _JurusanWidgetState extends State<JurusanWidget> {
                         height: 5,
                       ),
                       Text(
-                        dataJurusan.prodi.namaProdi,
+                        dataJurusan!.prodi!.namaProdi!,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,
                         ),
                       ),
                       Text(
-                        'Angkatan ${dataJurusan.tahunMasuk}',
+                        'Angkatan ${dataJurusan!.tahunMasuk}',
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,

@@ -1,15 +1,27 @@
+import 'package:collab_u/model/user.dart';
+import 'package:collab_u/model/user_pendidikan.dart';
+import 'package:collab_u/model/user_prodi.dart';
 import 'package:flutter/material.dart';
 
 class ProfilAtas extends StatefulWidget {
-  const ProfilAtas({
-    super.key,
-  });
+  final User? user;
+  final UserPendidikan? pendidikan;
+  const ProfilAtas({super.key, required this.user, this.pendidikan});
 
   @override
   State<ProfilAtas> createState() => _ProfilAtasState();
 }
 
 class _ProfilAtasState extends State<ProfilAtas> {
+  late User? user;
+  late UserProdi? prodi;
+  @override
+  void initState() {
+    user = widget.user;
+    prodi = widget.pendidikan?.prodi;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -43,20 +55,22 @@ class _ProfilAtasState extends State<ProfilAtas> {
             radius: 30,
             backgroundImage: AssetImage('assets/images/profile.png'),
           )),
-      const Positioned(
+      Positioned(
         top: 130,
         left: 20,
         child: Text(
-          'Muhammad Adi Saputera',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          user!.namaLengkap.toString(),
+          style:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),
-      const Positioned(
+      Positioned(
         top: 150,
         left: 20,
         child: Text(
-          'D3 - Teknik Informatika',
-          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white),
+          prodi?.namaProdi ?? '',
+          style:
+              const TextStyle(fontWeight: FontWeight.w400, color: Colors.white),
         ),
       ),
       Positioned(

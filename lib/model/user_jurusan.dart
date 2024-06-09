@@ -1,32 +1,43 @@
 import 'package:collab_u/model/user_pt.dart';
 
 class UserJurusan {
-  int idJurusan;
-  int idPt;
-  String namaJurusan;
-  String createdAt;
-  String updatedAt;
-  UserPerguruanTinggi perguruanTinggi;
+  int? idJurusan;
+  int? idPt;
+  String? namaJurusan;
+  String? createdAt;
+  String? updatedAt;
+  UserPerguruanTinggi? perguruantinggi;
 
-  UserJurusan({
-    required this.idJurusan,
-    required this.idPt,
-    required this.namaJurusan,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.perguruanTinggi,
-  });
+  UserJurusan(
+      {this.idJurusan,
+      this.idPt,
+      this.namaJurusan,
+      this.createdAt,
+      this.updatedAt,
+      this.perguruantinggi});
 
-  factory UserJurusan.fromJson(Map<String, dynamic> json) {
-    return UserJurusan(
-      idJurusan: json['id_jurusan'] ?? 0,
-      idPt: json['id_pt'] ?? 0,
-      namaJurusan: json['nama_jurusan'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
-      perguruanTinggi:
-          UserPerguruanTinggi.fromJson(json['perguruan_tinggi'] ?? {}),
-    );
+  UserJurusan.fromJson(Map<String, dynamic> json) {
+    idJurusan = json['id_jurusan'];
+    idPt = json['id_pt'];
+    namaJurusan = json['nama_jurusan'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    perguruantinggi = json['perguruantinggi'] != null
+        ? UserPerguruanTinggi.fromJson(json['perguruantinggi'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id_jurusan'] = idJurusan;
+    data['id_pt'] = idPt;
+    data['nama_jurusan'] = namaJurusan;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (perguruantinggi != null) {
+      data['perguruantinggi'] = perguruantinggi!.toJson();
+    }
+    return data;
   }
 
   bool get isNotEmpty {
