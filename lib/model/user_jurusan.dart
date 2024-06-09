@@ -28,4 +28,8 @@ class UserJurusan {
           UserPerguruanTinggi.fromJson(json['perguruan_tinggi'] ?? {}),
     );
   }
+
+  bool get isNotEmpty {
+    return idJurusan != 0;
+  }
 }

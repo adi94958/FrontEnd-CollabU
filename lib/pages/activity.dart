@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:collab_u/model/home/lowongan.dart';
+import 'package:collab_u/services/activity_services.dart';
 
 class Activity extends StatefulWidget {
-  const Activity({super.key});
+  const Activity({Key? key}) : super(key: key);
 
   @override
   State<Activity> createState() => _ActivityState();
@@ -102,7 +103,9 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
                         spreadRadius: 1,
                         blurRadius: 3,
                         offset: const Offset(
-                            0, 2), // perubahan bayangan diatur di sini
+                          0,
+                          2,
+                        ), // perubahan bayangan diatur di sini
                       ),
                     ],
                   ),
@@ -148,32 +151,85 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          itemProses(),
-                          itemProses(),
-                          itemProses(),
-                          itemProses(),
-                        ],
-                      ),
+                    // Tab "Proses"
+                    FutureBuilder<List<Lowongan>?>(
+                      future: ManajemenActivityService.fetchLamaranDiproses(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          print('Failed to load data: ${snapshot.error}');
+                          return Center(
+                              child:
+                                  Text('Failed to load data')); // Error display
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                              child: Text('Tidak ada lamaran diproses'));
+                        } else {
+                          return SingleChildScrollView(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: snapshot.data!.map((lowongan) {
+                                return itemProses(lowongan);
+                              }).toList(),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                    SingleChildScrollView(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          itemDiterima(),
-                        ],
-                      ),
+                    // Tab "Diterima"
+                    FutureBuilder<List<Lowongan>?>(
+                      future: ManajemenActivityService.fetchLamaranDiterima(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          print('Failed to load data: ${snapshot.error}');
+                          return Center(child: Text('Failed to load data'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                              child: Text('Tidak ada lamaran diterima'));
+                        } else {
+                          return SingleChildScrollView(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: snapshot.data!.map((lowongan) {
+                                return itemDiterima(lowongan);
+                              }).toList(),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                    SingleChildScrollView(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          itemDitolak(),
-                        ],
-                      ),
+                    // Tab "Ditolak"
+                    FutureBuilder<List<Lowongan>?>(
+                      future: ManajemenActivityService.fetchLamaranDitolak(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          print('Failed to load data: ${snapshot.error}');
+                          return Center(child: Text('Failed to load data'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                              child: Text('Tidak ada lamaran ditolak'));
+                        } else {
+                          return SingleChildScrollView(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: snapshot.data!.map((lowongan) {
+                                return itemDitolak(lowongan);
+                              }).toList(),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -185,7 +241,7 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
     );
   }
 
-  Widget itemDitolak() {
+  Widget itemDitolak(Lowongan lowongan) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(20),
@@ -198,26 +254,22 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
           Container(
             margin: const EdgeInsets.only(left: 10),
             child: RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'UI / UX Designer\n',
+                    text: '${lowongan.posisi}\n',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, // Warna teks
+                      color: Colors.black,
                     ),
                   ),
-                  WidgetSpan(
-                    child: SizedBox(
-                        height:
-                            20), // Menambahkan jarak vertical antara dua teks
-                  ),
+                  WidgetSpan(child: SizedBox(height: 20)),
                   TextSpan(
-                    text: 'Pekan Kreatifitas Mahasiswa',
+                    text: '${lowongan.kompetisi}',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.black, // Warna teks
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -229,7 +281,7 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
     );
   }
 
-  Widget itemDiterima() {
+  Widget itemDiterima(Lowongan lowongan) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(20),
@@ -244,26 +296,22 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
               Container(
                 margin: const EdgeInsets.only(left: 10),
                 child: RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'UI / UX Designer\n',
+                        text: '${lowongan.posisi}\n',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black, // Warna teks
+                          color: Colors.black,
                         ),
                       ),
-                      WidgetSpan(
-                        child: SizedBox(
-                            height:
-                                20), // Menambahkan jarak vertical antara dua teks
-                      ),
+                      WidgetSpan(child: SizedBox(height: 20)),
                       TextSpan(
-                        text: 'Pekan Kreatifitas Mahasiswa',
+                        text: '${lowongan.kompetisi}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.black, // Warna teks
+                          color: Colors.black,
                         ),
                       ),
                     ],
@@ -275,21 +323,26 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20, right: 30, left: 30),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF130160),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      text: ('HUBUNGI PEMBUAT LAMARAN'),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFFFFFF),
+                child: GestureDetector(
+                  onTap: () {
+                    // Add action to handle contact logic
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20, right: 30, left: 30),
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF130160),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        text: 'HUBUNGI PEMBUAT LAMARAN',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFFFFFF),
+                        ),
                       ),
                     ),
                   ),
@@ -302,25 +355,25 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
     );
   }
 
-  Widget itemProses() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(top: 10),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFFFF),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: [
-                Align(
+  Widget itemProses(Lowongan lowongan) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Align(
                   alignment: Alignment.centerRight,
                   child: SizedBox(
                     child: RichText(
                       text: const TextSpan(
-                        text: '1 Jam yang lalu',
+                        text: '1 Jam yang lalu', // Calculate time ago here
                         style: TextStyle(
                           fontSize: 10,
                           color: Color(0xFFAAA6B9),
@@ -329,44 +382,42 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10, left: 5),
-                      child: RichText(
-                        text: const TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'UI / UX Designer\n',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black, // Warna teks
-                              ),
-                            ),
-                            WidgetSpan(
-                              child: SizedBox(
-                                  height:
-                                      20), // Menambahkan jarak vertical antara dua teks
-                            ),
-                            TextSpan(
-                              text: 'Pekan Kreatifitas Mahasiswa',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black, // Warna teks
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-      ],
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 10, left: 5),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '${lowongan.posisi}\n',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        WidgetSpan(child: SizedBox(height: 20)),
+                        TextSpan(
+                          text: '${lowongan.kompetisi}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

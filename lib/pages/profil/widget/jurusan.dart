@@ -2,7 +2,7 @@ import 'package:collab_u/model/user_pendidikan.dart';
 import 'package:flutter/material.dart';
 
 class JurusanWidget extends StatefulWidget {
-  final List<UserPendidikan> dataPendidikan;
+  final UserPendidikan dataPendidikan;
   const JurusanWidget({super.key, required this.dataPendidikan});
 
   @override
@@ -10,7 +10,7 @@ class JurusanWidget extends StatefulWidget {
 }
 
 class _JurusanWidgetState extends State<JurusanWidget> {
-  late List<UserPendidikan> dataJurusan;
+  late UserPendidikan dataJurusan;
 
   @override
   void initState() {
@@ -93,7 +93,7 @@ class _JurusanWidgetState extends State<JurusanWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dataJurusan[0].jurusan.namaJurusan,
+                        dataJurusan.jurusan.namaJurusan,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 14,
@@ -104,14 +104,14 @@ class _JurusanWidgetState extends State<JurusanWidget> {
                         height: 5,
                       ),
                       Text(
-                        dataJurusan[0].prodi.namaProdi,
+                        dataJurusan.prodi.namaProdi,
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,
                         ),
                       ),
                       Text(
-                        'Angkatan ${dataJurusan[0].tahunMasuk}',
+                        'Angkatan ${dataJurusan.tahunMasuk}',
                         style: const TextStyle(
                           fontFamily: 'DMSans',
                           fontSize: 12,

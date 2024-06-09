@@ -34,15 +34,7 @@ class AppPage {
     GetPage(name: profil, page: () => const ProfilPage()),
     GetPage(name: edit_profil, page: () => const EditProfil()),
     GetPage(name: notifikasi, page: () => const Notifikasi()),
-    GetPage(
-      name: '/lamaran/manajemen_lamaran',
-      page: () {
-        final idLowongan = Get.parameters['idLowongan'] != null
-            ? int.parse(Get.parameters['idLowongan']!)
-            : 0;
-        return ManajemenLamaran(idLowongan: idLowongan);
-      },
-    ),
+    GetPage(name: manajemen_lamaran, page: () => ManajemenLamaran()),
     GetPage(name: profil_ringkasan, page: () => const TambahRingkasan()),
     GetPage(name: tambah_prestasi, page: () => const TambahPrestasi()),
     GetPage(name: edit_prestasi, page: () => const EditPrestasi()),

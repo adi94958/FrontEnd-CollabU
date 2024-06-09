@@ -22,4 +22,8 @@ class UserProdi {
       updatedAt: json['updated_at'] ?? '',
     );
   }
+
+  bool get isNotEmpty {
+    return idProdi != 0;
+  }
 }

@@ -12,7 +12,7 @@ class UserProfile {
   String createdAt;
   String updatedAt;
   User pengguna;
-  List<UserPendidikan> pendidikan;
+  UserPendidikan pendidikan;
   List<UserPrestasi> prestasi;
   List<UserPengalaman> pengalaman;
   List<UserKeahlian> keahlian;
@@ -40,10 +40,7 @@ class UserProfile {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       pengguna: User.fromJson(json['pengguna'] ?? {}),
-      pendidikan: (json['pendidikan'] as List<dynamic>?)
-              ?.map((item) => UserPendidikan.fromJson(item))
-              .toList() ??
-          [],
+      pendidikan: UserPendidikan.fromJson(json['pendidikan'] ?? {}),
       prestasi: (json['prestasi'] as List<dynamic>?)
               ?.map((item) => UserPrestasi.fromJson(item))
               .toList() ??

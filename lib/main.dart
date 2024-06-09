@@ -16,8 +16,8 @@ void main() {
     theme: ThemeData(
       inputDecorationTheme: InputDecorationTheme(
         errorStyle: TextStyle(
-          fontSize: 14, // Adjust the font size as needed
-          fontFamily: 'DMSans', // Ensure it matches your desired font
+          fontSize: 14,
+          fontFamily: 'DMSans',
         ),
       ),
     ),
