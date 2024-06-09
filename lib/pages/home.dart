@@ -26,12 +26,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   Future<void> _loadIdPengguna() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var idString = prefs.getString("id");
-    print('Loaded idPengguna: $idString');
     setState(() {
-      idPengguna = int.tryParse(idString ?? '');
+      idPengguna = int.tryParse(prefs.getString("id") ?? '');
     });
-    print('Parsed idPengguna: $idPengguna');
   }
 
   @override

@@ -53,16 +53,4 @@ class UserPendidikan {
     }
     return data;
   }
-
-  bool get isNotEmpty {
-    return id != 0 &&
-        idProfil != 0 &&
-        idJurusan != 0 &&
-        idProdi != 0 &&
-        tahunMasuk.isNotEmpty &&
-        createdAt.isNotEmpty &&
-        updatedAt.isNotEmpty &&
-        prodi.isNotEmpty &&
-        jurusan.isNotEmpty;
-  }
 }
