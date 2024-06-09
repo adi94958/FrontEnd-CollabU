@@ -29,4 +29,8 @@ class UserProdi {
     data['updated_at'] = updatedAt;
     return data;
   }
+
+  bool get isNotEmpty {
+    return idProdi != 0;
+  }
 }
