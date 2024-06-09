@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:collab_u/model/lowongan/jurusan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collab_u/services/url_global.dart';
 
 class TambahDeskripsi extends StatefulWidget {
   
@@ -35,7 +37,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
   }
 
   Future<void> fetchJurusanList() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/jurusan'));
+    final response = await http.get(Uri.parse('$baseUrl/jurusan'));
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as List;
       setState(() {
@@ -47,7 +49,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
   }
 
   Future<void> fetchProdiList() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/prodi'));
+    final response = await http.get(Uri.parse('$baseUrl/prodi'));
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as List;
       setState(() {
@@ -70,8 +72,10 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
         'angkatan': selectedTingkat,
       };
 
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var id = pref.getString("id");
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/lowongan/1'),
+        Uri.parse('$baseUrl/lowongan/$id'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(data),
       );
@@ -108,7 +112,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
               children: [
                 const SizedBox(height: 15),
                 const Text(
-                  'Tambahkan Deskripsi',
+                  'Buat Lowongan',
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'DMSans',
