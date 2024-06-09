@@ -1,4 +1,4 @@
-import 'package:collab_u/pages/buat_lowongan/tambah_deskripsi.dart';
+import 'package:collab_u/pages/postingan.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:collab_u/controller/controller.dart';
@@ -26,7 +26,7 @@ class _NavBarState extends State<NavBar> {
           children: [
             Home(),
             Lamaran(),
-            TambahDeskripsi(),
+            Postingan(),
             Chat(),
             Activity(),
           ],
