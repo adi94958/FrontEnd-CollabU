@@ -1,15 +1,14 @@
 import 'package:collab_u/model/home/pelamar.dart';
-import 'package:collab_u/services/manajemen_lamaran_api.dart';
+import 'package:collab_u/services/manajemen_lamaran_services.dart';
+import 'package:collab_u/widgets/callculate_time_ago.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class ManajemenLamaran extends StatefulWidget {
-  final int idLowongan;
-
-  const ManajemenLamaran({Key? key, required this.idLowongan})
-      : super(key: key);
+  const ManajemenLamaran({super.key});
 
   @override
   _ManajemenLamaranState createState() => _ManajemenLamaranState();
@@ -18,6 +17,10 @@ class ManajemenLamaran extends StatefulWidget {
 class _ManajemenLamaranState extends State<ManajemenLamaran>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late int idLowongan;
+  late String posisi;
+  late String kompetisi;
+  // List<Pelamar> pelamars = [];
 
   @override
   void initState() {
@@ -26,6 +29,10 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
       length: 3,
       vsync: this,
     );
+    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+    idLowongan = arguments['idLowongan'];
+    posisi = arguments['posisi'];
+    kompetisi = arguments['kompetisi'];
   }
 
   @override
@@ -75,29 +82,51 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 10, left: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, left: 10),
+                          child: Text(
+                            posisi,
+                            style: TextStyle(
+                              color: Color(0xFF150B3D),
+                              fontSize: 20,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text(
+                            kompetisi,
+                            style: TextStyle(
+                              color: Color(0xFF524B6B),
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 100),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Implement your action here
+                        print('Tutup button pressed');
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red),
+                      ),
                       child: Text(
-                        'UI/UX Designer',
+                        'Tutup',
                         style: TextStyle(
-                          color: Color(0xFF150B3D),
-                          fontSize: 20,
+                          color: Colors.white,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10, bottom: 10),
-                      child: Text(
-                        'Hackathon Nasional 2024',
-                        style: TextStyle(
-                          color: Color(0xFF524B6B),
-                          fontSize: 12,
-                          fontFamily: 'Poppins',
                         ),
                       ),
                     ),
@@ -168,7 +197,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                     children: [
                       FutureBuilder<List<Pelamar>>(
                         future: ManajemenLamaranService.fetchManajemenLamaran(
-                            widget.idLowongan),
+                            idLowongan),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -178,12 +207,20 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                 child: Text('Error: ${snapshot.error}'));
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
-                            return Center(child: Text('No data available'));
+                            return Center(child: Text('Tidak ada pelamar'));
                           } else {
+                            final pelamarDiProses = snapshot.data!
+                                .where(
+                                    (pelamar) => pelamar.status == 'diproses')
+                                .toList();
+
+                            if (pelamarDiProses.isEmpty) {
+                              return Center(child: Text('Tidak ada pelamar'));
+                            }
                             return SingleChildScrollView(
                               padding: const EdgeInsets.all(10),
                               child: Column(
-                                children: snapshot.data!
+                                children: pelamarDiProses
                                     .map((pelamar) => itemPelamar(pelamar))
                                     .toList(),
                               ),
@@ -191,21 +228,75 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                           }
                         },
                       ),
-                      SingleChildScrollView(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            itemDiterima(),
-                          ],
-                        ),
+                      FutureBuilder<List<Pelamar>>(
+                        future: ManajemenLamaranService.fetchManajemenLamaran(
+                            idLowongan),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(child: Text('Tidak ada pelamar'));
+                          } else {
+                            // Filter pelamar yang statusnya "di proses"
+                            final pelamarDiterima = snapshot.data!
+                                .where(
+                                    (pelamar) => pelamar.status == 'diterima')
+                                .toList();
+
+                            if (pelamarDiterima.isEmpty) {
+                              return Center(
+                                  child:
+                                      Text('Tidak ada pelamar yang diterima'));
+                            }
+                            return SingleChildScrollView(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: pelamarDiterima
+                                    .map((pelamar) => itemDiterima(pelamar))
+                                    .toList(),
+                              ),
+                            );
+                          }
+                        },
                       ),
-                      SingleChildScrollView(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            itemDitolak(),
-                          ],
-                        ),
+                      FutureBuilder<List<Pelamar>>(
+                        future: ManajemenLamaranService.fetchManajemenLamaran(
+                            idLowongan),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(child: Text('Tidak ada pelamar'));
+                          } else {
+                            // Filter pelamar yang statusnya "di proses"
+                            final pelamarDitolak = snapshot.data!
+                                .where((pelamar) => pelamar.status == 'ditolak')
+                                .toList();
+                            if (pelamarDitolak.isEmpty) {
+                              return Center(
+                                  child:
+                                      Text('Tidak ada pelamar yang ditolak'));
+                            }
+                            return SingleChildScrollView(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: pelamarDitolak
+                                    .map((pelamar) => itemDitolak(pelamar))
+                                    .toList(),
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -218,7 +309,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
     );
   }
 
-  Widget itemDitolak() {
+  Widget itemDitolak(Pelamar pelamarDitolak) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(20),
@@ -235,10 +326,10 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
           Container(
             margin: const EdgeInsets.only(left: 10),
             child: RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Muhammad Adi Saputera\n',
+                    text: '${pelamarDitolak.pengguna.namaLengkap}\n',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -251,7 +342,8 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                             20), // Menambahkan jarak vertical antara dua teks
                   ),
                   TextSpan(
-                    text: 'D3 Teknik Informatika',
+                    text:
+                        '${pelamarDitolak.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.black, // Warna teks
@@ -266,7 +358,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
     );
   }
 
-  Widget itemDiterima() {
+  Widget itemDiterima(Pelamar pelamarDiterima) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(20),
@@ -285,10 +377,10 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
               Container(
                 margin: const EdgeInsets.only(left: 10),
                 child: RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Muhammad Adi Saputera\n',
+                        text: '${pelamarDiterima.pengguna.namaLengkap}\n',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -301,7 +393,8 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                 20), // Menambahkan jarak vertical antara dua teks
                       ),
                       TextSpan(
-                        text: 'D3 Teknik Informatika',
+                        text:
+                            '${pelamarDiterima.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black, // Warna teks
@@ -357,16 +450,8 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
             child: Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
-                child: RichText(
-                  text: const TextSpan(
-                    text: '1 Jam yang lalu',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Color(0xFFAAA6B9),
-                    ),
-                  ),
-                ),
-              ),
+                  child:
+                      TimeAgoText(pelamar.tglLamar ?? 'default_date_string')),
             ),
           ),
           Container(
@@ -397,7 +482,8 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                   20), // Menambahkan jarak vertical antara dua teks
                         ),
                         TextSpan(
-                          text: "D3 - Teknik Informatika",
+                          text:
+                              '${pelamar.pengguna.profil.pendidikan?.prodi?.namaProdi ?? ''}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.black, // Warna teks
@@ -415,7 +501,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                         children: [
                           RichText(
                             textAlign: TextAlign.justify,
-                            text: const TextSpan(
+                            text: TextSpan(
                               children: [
                                 TextSpan(
                                   text: ('Ringkasan Pribadi\n'),
@@ -432,7 +518,7 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                 ),
                                 TextSpan(
                                   text:
-                                      ('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id commodo egestas metus interdum dolor.\n'),
+                                      ('${pelamar.pengguna.profil.tentangSaya}\n'),
                                   style: TextStyle(
                                     fontSize: 10,
                                     color: Color(0xFF524B6B),
@@ -452,18 +538,24 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                   ),
                                 ),
                                 WidgetSpan(
-                                  child: SizedBox(
-                                      height:
-                                          20), // Menambahkan jarak vertical antara dua teks
+                                  child: SizedBox(height: 20),
                                 ),
-                                TextSpan(
-                                  text:
-                                      ('1. PKM Polban 2023\n2. Staff Muda BEM KEMA Polban 2023\n'),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFF524B6B),
-                                  ),
-                                ),
+                                ...(pelamar.pengguna.profil.pengalaman ?? [])
+                                    .asMap()
+                                    .entries
+                                    .map<InlineSpan>((entry) {
+                                  int idx =
+                                      entry.key + 1; // Index starts from 1
+                                  var pengalaman = entry.value;
+                                  return TextSpan(
+                                    text:
+                                        '$idx. ${pengalaman.posisi} di ${pengalaman.perusahaan} (${pengalaman.tglMulai} - ${pengalaman.tglSelesai})\n',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFF524B6B),
+                                    ),
+                                  );
+                                }).toList(),
                                 WidgetSpan(
                                   child: SizedBox(
                                       height:
@@ -482,14 +574,20 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                       height:
                                           20), // Menambahkan jarak vertical antara dua teks
                                 ),
-                                TextSpan(
-                                  text:
-                                      ('Komunikasi, HTML5, PHP, ReactJS, Laravel\n'),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFF524B6B),
-                                  ),
-                                ),
+                                ...(pelamar.pengguna.profil.keahlian ?? [])
+                                    .asMap()
+                                    .entries
+                                    .map<InlineSpan>((entry) {
+                                  int idx = entry.key + 1; // Index mulai dari 1
+                                  var keahlian = entry.value;
+                                  return TextSpan(
+                                    text: '$idx. ${keahlian.keahlian}\n',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFF524B6B),
+                                    ),
+                                  );
+                                }).toList(),
                                 WidgetSpan(
                                   child: SizedBox(
                                       height:
@@ -508,14 +606,21 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                                       height:
                                           20), // Menambahkan jarak vertical antara dua teks
                                 ),
-                                TextSpan(
-                                  text:
-                                      ('1. Juara 1 pengembangan aplikasi pertanian\n2. Lolos pendanaan PKM Belmawa 2024\n'),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFF524B6B),
-                                  ),
-                                ),
+                                ...(pelamar.pengguna.profil.prestasi ?? [])
+                                    .asMap()
+                                    .entries
+                                    .map<InlineSpan>((entry) {
+                                  int idx = entry.key + 1; // Index mulai dari 1
+                                  var prestasi = entry.value;
+                                  return TextSpan(
+                                    text:
+                                        '$idx. ${prestasi.kategori} di ${prestasi.namaPenghargaan} pada tahun ${prestasi.tahun}\n',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFF524B6B),
+                                    ),
+                                  );
+                                }).toList(),
                                 WidgetSpan(
                                   child: SizedBox(
                                       height:
@@ -571,44 +676,84 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 20, right: 10),
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFF0404),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: const TextSpan(
-                                        text: ('TOLAK'),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFFFFFFFF),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      try {
+                                        await ManajemenLamaranService
+                                            .tolakPelamar(pelamar.idPelamar);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content:
+                                                    Text('Pelamar ditolak')));
+                                        setState(() {
+                                          // Lakukan pembaruan UI jika diperlukan
+                                        });
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Gagal menolak pelamar: $e')));
+                                      }
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 20, left: 10),
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF0404),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: const TextSpan(
+                                          text: ('TOLAK'),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFFFFFFF),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 20, left: 10),
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF05FF00),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: const TextSpan(
-                                        text: ('TERIMA'),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFFFFFFFF),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      try {
+                                        await ManajemenLamaranService
+                                            .terimaPelamar(pelamar.idPelamar);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content:
+                                                    Text('Pelamar diterima')));
+                                        setState(() {
+                                          // Lakukan pembaruan UI jika diperlukan
+                                        });
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Gagal menerima pelamar: $e')));
+                                      }
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 20, left: 10),
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF05FF00),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: const TextSpan(
+                                          text: ('TERIMA'),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFFFFFFF),
+                                          ),
                                         ),
                                       ),
                                     ),

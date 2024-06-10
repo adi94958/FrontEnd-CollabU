@@ -1,3 +1,10 @@
+import 'package:collab_u/model/home/jurusan.dart';
+import 'package:collab_u/model/user_profile.dart';
+import 'package:collab_u/model/user_pt.dart';
+import 'package:collab_u/model/home/prodi.dart';
+import 'package:collab_u/model/home/jurusan.dart';
+import 'package:collab_u/model/home/angkatan.dart';
+
 class Pengguna {
   final int idPengguna;
   final String email;
@@ -10,6 +17,10 @@ class Pengguna {
   final int idPT;
   final int idJurusan;
   final int idProdi;
+  final UserProfile profil;
+  // final Prodi? prodi;
+  // final Jurusan jurusan;
+  // final UserPerguruanTinggi perguruanTinggi;
 
   Pengguna({
     required this.idPengguna,
@@ -23,6 +34,10 @@ class Pengguna {
     required this.idPT,
     required this.idJurusan,
     required this.idProdi,
+    required this.profil,
+    // required this.prodi,
+    // required this.jurusan,
+    // required this.perguruanTinggi,
   });
 
   factory Pengguna.fromJson(Map<String, dynamic> json) {
@@ -38,6 +53,10 @@ class Pengguna {
       idPT: json['id_pt'],
       idJurusan: json['id_jurusan'],
       idProdi: json['id_prodi'],
+      profil: UserProfile.fromJson(json['profil']),
+      // prodi: Prodi.fromJson(json['prodi']),
+      // jurusan: Jurusan.fromJson(json['perguruantinggi']),
+      // perguruanTinggi: UserPerguruanTinggi.fromJson(json['perguruantinggi']),
     );
   }
 }
