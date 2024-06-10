@@ -1,8 +1,9 @@
 import 'package:collab_u/pages/auth/login.dart';
 import 'package:collab_u/pages/auth/register.dart';
+import 'package:collab_u/pages/buat_lowongan/tambah_deskripsi.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
-import 'package:collab_u/pages/postingan.dart';
+import 'package:collab_u/pages/buat_lowongan/succes_page.dart';
 import 'package:collab_u/pages/profil/edit/edit_profil_page.dart';
 import 'package:collab_u/pages/profil/jurusan/edit_jurusan.dart';
 import 'package:collab_u/pages/profil/jurusan/tambah_jurusan.dart';
@@ -31,22 +32,15 @@ class AppPage {
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
-    GetPage(name: postingan, page: () => const Postingan()),
+    GetPage(name: sukses, page: () => SuccessPage()),
+    GetPage(name: tambah_deskripsi, page: () => TambahDeskripsi()),
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
     GetPage(name: daftar_lowongan, page: () => const DaftarLowongan()),
     GetPage(name: profil, page: () => const ProfilPage()),
     GetPage(name: edit_profil, page: () => const EditProfil()),
     GetPage(name: notifikasi, page: () => const Notifikasi()),
-    GetPage(
-      name: '/lamaran/manajemen_lamaran',
-      page: () {
-        final idLowongan = Get.parameters['idLowongan'] != null
-            ? int.parse(Get.parameters['idLowongan']!)
-            : 0;
-        return ManajemenLamaran(idLowongan: idLowongan);
-      },
-    ),
+    GetPage(name: manajemen_lamaran, page: () => ManajemenLamaran()),
     GetPage(name: profil_ringkasan, page: () => const TambahRingkasan()),
     GetPage(name: tambah_prestasi, page: () => const TambahPrestasi()),
     GetPage(name: edit_prestasi, page: () => const EditPrestasi()),
@@ -63,7 +57,7 @@ class AppPage {
   static getNavbar() => navbar;
   static getHome() => home;
   static getActivity() => activity;
-  static getPostingan() => postingan;
+  static getSuccesPage() => sukses;
   static getChat() => chat;
   static getLamaran() => lamaran;
   static getDaftarLowongan() => daftar_lowongan;
@@ -78,6 +72,7 @@ class AppPage {
   static getEditPrestasi() => edit_prestasi;
   static getEditPengalaman() => edit_pengalaman;
   static getEditJurusan() => edit_jurusan;
+  static getTambahDeskripsi() => tambah_deskripsi;
 
   static String splash = '/';
   static String start = '/start';
@@ -86,7 +81,7 @@ class AppPage {
   static String navbar = '/navbar';
   static String home = '/home';
   static String activity = '/activity';
-  static String postingan = '/postingan';
+  static String sukses = '/sukses';
   static String chat = '/chat';
   static String lamaran = '/lamaran';
   static String daftar_lowongan = '/daftar_lowongan';
@@ -101,4 +96,5 @@ class AppPage {
   static String edit_prestasi = '/profil/edit_prestasi';
   static String edit_pengalaman = '/profil/edit_pengalaman';
   static String edit_jurusan = '/profil/edit_jurusan';
+  static String tambah_deskripsi = '/tambah_deskripsi';
 }

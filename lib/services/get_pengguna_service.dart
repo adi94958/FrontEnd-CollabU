@@ -2,12 +2,13 @@ import 'package:collab_u/model/home/lowongan.dart';
 import 'package:collab_u/services/url_global.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LamaranService {
+class GetPenggunaService {
   static Future<List<Lowongan>> fetchLamaran() async {
-    // static Future<List<Lowongan>> fetchLowongans(int id) async {
-    final url = Uri.parse(
-        '$baseUrl/daftar-lowongan/1'); //final url = Uri.parse('$baseUrl/daftar-lowongan/$id');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id_pengguna = prefs.getString("id");
+    final url = Uri.parse('$baseUrl/pengguna/$id_pengguna');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
