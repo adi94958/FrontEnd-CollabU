@@ -1,3 +1,4 @@
+import 'package:collab_u/bloc/JurusanProdiBloc/jurusan_prodi_list_bloc.dart';
 import 'package:collab_u/bloc/ProfileBloc/profile_bloc.dart';
 import 'package:collab_u/model/user_profile.dart';
 import 'package:collab_u/pages/profil/widget/jurusan.dart';
@@ -8,6 +9,7 @@ import 'package:collab_u/pages/profil/widget/profil_atas.dart';
 import 'package:collab_u/pages/profil/widget/ringkasan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -19,6 +21,7 @@ class ProfilPage extends StatefulWidget {
 class _ProfilPageState extends State<ProfilPage> {
   @override
   void initState() {
+    context.read<JurusanProdiListBloc>().add(GetJurusan());
     context.read<ProfileBloc>().add(GetProfile());
     super.initState();
   }
@@ -118,43 +121,66 @@ class LogoutWidget extends StatelessWidget {
     super.key,
   });
 
+  void logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("id");
+    Future.delayed(const Duration(seconds: 2), () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Berhasil Logout'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushNamed(context, '/login');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 70,
-      width: 335,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        children: [
-          Container(
-            height: 70,
-            width: 290,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.logout,
-                  size: 24,
-                  color: Colors.red,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: InkWell(
+        onTap: () {
+          logout(context);
+        },
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  height: 70,
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.logout,
+                        size: 24,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Log Out',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red),
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  'Log Out',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -167,49 +193,51 @@ class ResumeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 70,
-      width: 335,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        children: [
-          Container(
-            height: 70,
-            width: 295,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.assignment_ind_outlined,
-                  size: 24,
-                  color: Colors.orange,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                height: 70,
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.assignment_ind_outlined,
+                      size: 24,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Text(
+                      'Resume',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.add_circle_outline),
+                      color: Colors.orange,
+                      iconSize: 24,
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  'Resume',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  width: 160,
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add_circle_outline),
-                  color: Colors.orange,
-                  iconSize: 24,
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

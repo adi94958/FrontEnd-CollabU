@@ -1,3 +1,4 @@
+import 'package:collab_u/pages/profil/widget/backtoprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +31,6 @@ class _TambahJurusanState extends State<TambahJurusan> {
             child: YearPicker(
               firstDate: DateTime(DateTime.now().year - 8),
               lastDate: DateTime.now(),
-              initialDate: DateTime.now(),
               selectedDate: _selectedYear ?? DateTime.now(),
               onChanged: (DateTime dateTime) {
                 Navigator.of(context).pop(dateTime);
@@ -50,113 +50,19 @@ class _TambahJurusanState extends State<TambahJurusan> {
   }
 
   @override
+  void initState() {
+    initializeDateFormatting('id');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color.fromARGB(249, 249, 249, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      height: 260,
-                      child: Center(
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            const Text(
-                              'Hapus Perubahan ?',
-                              style: TextStyle(
-                                  fontFamily: 'DMSans',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              'Yakin menghapus perubahan yang telah anda masukkan?',
-                              style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromARGB(200, 19, 1, 96)),
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  const Size(213, 50),
-                                ),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'BATAL',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/profil');
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromRGBO(244, 67, 54, 1)),
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  const Size(213, 50),
-                                ),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'HAPUS',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            },
-            icon: const Icon(Icons.west_outlined)),
+        leading: const BackToProfile(),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -342,5 +248,112 @@ class _TambahJurusanState extends State<TambahJurusan> {
         ),
       ),
     ));
+  }
+}
+
+class ss extends StatelessWidget {
+  const ss({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return SizedBox(
+                  height: 260,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        const Text(
+                          'Hapus Perubahan ?',
+                          style: TextStyle(
+                              fontFamily: 'DMSans',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'Yakin menghapus perubahan yang telah anda masukkan?',
+                          style: TextStyle(
+                            fontFamily: 'DMSans',
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromARGB(200, 19, 1, 96)),
+                            shape: MaterialStateProperty.all<OutlinedBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            minimumSize: MaterialStateProperty.all<Size>(
+                              const Size(213, 50),
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'BATAL',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/profil');
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromRGBO(244, 67, 54, 1)),
+                            shape: MaterialStateProperty.all<OutlinedBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            minimumSize: MaterialStateProperty.all<Size>(
+                              const Size(213, 50),
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'HAPUS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+        },
+        icon: const Icon(Icons.west_outlined));
   }
 }

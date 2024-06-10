@@ -1,11 +1,17 @@
+import 'dart:io';
+
+import 'package:collab_u/bloc/ProfileCubit/profile_cubit.dart';
+import 'package:collab_u/pages/profil/edit/profil_atas_edit.dart';
+import 'package:collab_u/services/user_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 enum Gender { male, female }
 
 class EditProfil extends StatefulWidget {
-  const EditProfil({super.key});
+  const EditProfil({Key? key}) : super(key: key);
 
   @override
   State<EditProfil> createState() => EditProfilState();
@@ -15,7 +21,18 @@ class EditProfilState extends State<EditProfil> {
   final _formKey = GlobalKey<FormState>();
 
   Gender _selectedGender = Gender.male;
-  final dateController = TextEditingController(text: '6 September 2004');
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController shortNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController noHpController = TextEditingController();
+  String jenisKelamin = '';
+  DateTime tempDate = DateTime.now();
+  DateFormat format = DateFormat("yyyy-MM-dd");
+  int id = 0;
+
+  // ignore: unused_field
+  File? _image;
 
   // ignore: unused_field
   DateTime? _selectedDate;
@@ -36,475 +53,471 @@ class EditProfilState extends State<EditProfil> {
     }
   }
 
-  final fullNameController =
-      TextEditingController(text: 'Muhammad Adi Saputera');
-  final shortNameController = TextEditingController(text: 'Adi');
-  final tanggalLahir = TextEditingController(text: '6 September 2004');
-  final email = TextEditingController(text: 'adi94958@gmail.com ');
-  final noHp = TextEditingController(text: '619 3456 7890');
+  @override
+  void initState() {
+    initializeDateFormatting('id');
+    _image = null;
+    super.initState();
+  }
+
+  void _updateImage(File? image) {
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void editData() {
+    if (_selectedGender == Gender.male) {
+      jenisKelamin == "Pria";
+    } else {
+      jenisKelamin == "Wanita";
+    }
+    final Map<String, dynamic> profil = {
+      'email': emailController.text,
+      'nama_lengkap': fullNameController.text,
+      'nama_panggilan': shortNameController.text,
+      'tanggal_lahir': DateFormat('yyyy-MM-dd').format(_selectedDate!),
+      'jenis_kelamin': jenisKelamin,
+      'no_telp': noHpController.text,
+    };
+    print(profil);
+    UserApi.editProfil(context, profil);
+  }
+
+  void editDataWithImage() {
+    if (_selectedGender == Gender.male) {
+      jenisKelamin = "Pria";
+    } else {
+      jenisKelamin = "Wanita";
+    }
+    final Map<String, dynamic> profil = {
+      'email': emailController.text,
+      'nama_lengkap': fullNameController.text,
+      'nama_panggilan': shortNameController.text,
+      'tanggal_lahir': DateFormat('yyyy-MM-dd').format(_selectedDate!),
+      'jenis_kelamin': jenisKelamin,
+      'no_telp': noHpController.text,
+    };
+    print(profil);
+    UserApi.editProfilwithImage(context, profil, _image!);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(249, 249, 249, 255),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const EditTop(),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 580,
-                width: 400,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Nama Lengkap',
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 40,
-                            width: double.infinity,
-                            child: TextFormField(
-                              controller: fullNameController,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors
-                                    .white, // Set your desired background color
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20.0),
-                                hintText: 'Enter your text',
-                              ),
-                              style: const TextStyle(
-                                  fontSize: 12, fontFamily: 'DMSans'),
+        body: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileEdit) {
+              if (_selectedDate == null) {
+                fullNameController.text = state.user.namaLengkap!;
+                shortNameController.text = state.user.namaPanggilan!;
+                emailController.text = state.user.email!;
+                noHpController.text = state.user.noTelp!;
+                _selectedGender = state.user.jenisKelamin! == "Pria"
+                    ? Gender.male
+                    : Gender.female;
+                jenisKelamin = state.user.jenisKelamin!;
+                dateController.text = state.user.tanggalLahir!;
+                tempDate = format.parse(dateController.text);
+                _selectedDate = tempDate;
+                dateController.text = DateFormat.yMMMMd('id').format(tempDate);
+              }
+            }
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  EditTop(
+                    onImageChanged: _updateImage,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Nama Lengkap',
+                              style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'Nama Panggilan',
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 40,
-                            width: double.infinity,
-                            child: TextFormField(
-                              controller: shortNameController,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors
-                                    .white, // Set your desired background color
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20.0),
-                                hintText: 'Enter your text',
-                              ),
-                              style: const TextStyle(
-                                  fontSize: 12, fontFamily: 'DMSans'),
+                            const SizedBox(
+                              height: 10,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'Tanggal Lahir',
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 40,
-                            width: double.infinity,
-                            child: TextFormField(
-                              controller: dateController,
-                              decoration: InputDecoration(
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: fullNameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Nama lengkap tidak boleh kosong';
+                                  }
+                                  if (value.length > 100) {
+                                    return 'Nama lengkap maksimal 100 karakter';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors
-                                      .white, // Set your desired background color
+                                  fillColor: Colors.white,
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 5.0, horizontal: 20.0),
-                                  hintText: 'Enter your text',
-                                  suffixIcon: const Icon(
-                                    Icons.calendar_month_outlined,
-                                    size: 19,
-                                  )),
-                              style: const TextStyle(
-                                  fontSize: 12, fontFamily: 'DMSans'),
-                              onTap: () {
-                                _selectDate(context);
-                              },
-                              readOnly: true,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'Gender',
-                            style: TextStyle(
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedGender = Gender.male;
-                                  });
-                                },
-                                child: Container(
-                                  width: 160,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center, // Center text and radio button
-                                    children: [
-                                      Radio(
-                                        value: Gender.male,
-                                        groupValue: _selectedGender,
-                                        onChanged: (Gender? value) {
-                                          setState(() {
-                                            _selectedGender = value!;
-                                          });
-                                        },
-                                        activeColor: Colors
-                                            .orange, // Change radio button color to orange
-                                      ),
-                                      const Text(
-                                        'Laki - Laki',
-                                        style: TextStyle(
-                                            fontSize: 14, fontFamily: 'DMSans'),
-                                      ),
-                                      const SizedBox(
-                                        width: 25,
-                                      )
-                                    ],
-                                  ),
+                                      vertical: 5, horizontal: 10.0),
+                                  hintText: 'Masukkan nama lengkap',
                                 ),
+                                style: const TextStyle(
+                                    fontSize: 12, fontFamily: 'DMSans'),
                               ),
-                              const SizedBox(
-                                width: 30,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedGender = Gender.female;
-                                  });
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              'Nama Panggilan',
+                              style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: shortNameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Nama panggilan tidak boleh kosong';
+                                  }
+                                  if (value.length > 50) {
+                                    return 'Nama panggilan maksimal 50 karakter';
+                                  }
+                                  return null;
                                 },
-                                child: Container(
-                                  width: 160,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center, // Center text and radio button
-                                    children: [
-                                      Radio(
-                                        value: Gender.female,
-                                        groupValue: _selectedGender,
-                                        onChanged: (Gender? value) {
-                                          setState(() {
-                                            _selectedGender = value!;
-                                          });
-                                        },
-                                        activeColor: Colors
-                                            .orange, // Change radio button color to orange
-                                      ),
-                                      const Text(
-                                        'Perempuan',
-                                        style: TextStyle(
-                                            fontSize: 14, fontFamily: 'DMSans'),
-                                      ),
-                                      const SizedBox(
-                                        width: 25,
-                                      )
-                                    ],
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10.0),
+                                  hintText: 'Masukkan nama panggilan',
                                 ),
+                                style: const TextStyle(
+                                    fontSize: 12, fontFamily: 'DMSans'),
                               ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'Email',
-                            style: TextStyle(
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              'Tanggal Lahir',
+                              style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: dateController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Tanggal lahir tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 10.0),
+                                    suffixIcon: const Icon(
+                                      Icons.calendar_month_outlined,
+                                      size: 19,
+                                    )),
+                                style: const TextStyle(
+                                    fontSize: 12, fontFamily: 'DMSans'),
+                                onTap: () {
+                                  _selectDate(context);
+                                },
+                                readOnly: true,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              'Gender',
+                              style: TextStyle(
                                 fontFamily: 'DMSans',
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 40,
-                            width: double.infinity,
-                            child: TextFormField(
-                              controller: email,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors
-                                    .white, // Set your desired background color
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20.0),
-                                hintText: 'Enter your text',
+                                fontSize: 14,
                               ),
-                              style: const TextStyle(
-                                  fontSize: 12, fontFamily: 'DMSans'),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const Text(
-                            'No. Hp',
-                            style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors
-                                  .white, // Set your desired background color
+                            const SizedBox(
+                              height: 10,
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20.0),
-                            child: IntrinsicHeight(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    '+62',
-                                    style: TextStyle(
-                                        fontFamily: 'DMSans',
-                                        color: Colors.black,
-                                        fontSize:
-                                            12 // Set the text color to black
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedGender = Gender.male;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 160,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center, // Center text and radio button
+                                      children: [
+                                        Radio(
+                                          value: Gender.male,
+                                          groupValue: _selectedGender,
+                                          onChanged: (Gender? value) {
+                                            setState(() {
+                                              _selectedGender = value!;
+                                            });
+                                          },
+                                          activeColor: Colors
+                                              .orange, // Change radio button color to orange
                                         ),
-                                  ),
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
-                                  const VerticalDivider(
-                                    color: Colors.black,
-                                    indent: 5,
-                                    endIndent: 5,
-                                    thickness: 0.5,
-                                  ),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 40,
-                                      width: double.infinity,
-                                      child: TextFormField(
-                                        controller: noHp,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors
-                                              .white, // Set your desired background color
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide.none,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 5),
-                                          hintText: 'Enter your text',
+                                        const Text(
+                                          'Laki - Laki',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'DMSans'),
                                         ),
-                                        style: const TextStyle(
-                                            fontSize: 12, fontFamily: 'DMSans'),
-                                      ),
+                                        const SizedBox(
+                                          width: 25,
+                                        )
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  Navigator.pushNamed(context, '/profil');
-                                  // Form is validated, submit your data
-                                  // You can access form values like:
-                                  // fullNameController.text
-                                  // shortNameController.text
-                                  // dateController.text
-                                  // email.text
-                                  // noHp.text
-                                }
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromARGB(200, 19, 1, 96)),
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedGender = Gender.female;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 160,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center, // Center text and radio button
+                                      children: [
+                                        Radio(
+                                          value: Gender.female,
+                                          groupValue: _selectedGender,
+                                          onChanged: (Gender? value) {
+                                            setState(() {
+                                              _selectedGender = value!;
+                                            });
+                                          },
+                                          activeColor: Colors
+                                              .orange, // Change radio button color to orange
+                                        ),
+                                        const Text(
+                                          'Perempuan',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'DMSans'),
+                                        ),
+                                        const SizedBox(
+                                          width: 25,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  const Size(213, 50),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              'Email',
+                              style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Email tidak boleh kosong';
+                                  }
+                                  if (value.length > 100) {
+                                    return 'Email maksimal 100 karakter';
+                                  }
+                                  if (!RegExp(
+                                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                                      .hasMatch(value)) {
+                                    return 'Masukkan email yang valid';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10.0),
+                                  hintText: 'Masukkan email',
                                 ),
+                                style: const TextStyle(
+                                    fontSize: 12, fontFamily: 'DMSans'),
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'SIMPAN',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              'No. Hp',
+                              style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: noHpController,
+                                keyboardType: TextInputType.phone,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'No. Hp tidak boleh kosong';
+                                  }
+                                  if (value.length > 13) {
+                                    return 'No. Hp harus terdiri dari kurang 13 angka';
+                                  }
+                                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                                    return 'No. Hp harus berupa angka';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10),
+                                  hintText: 'Masukkan no. Hp',
+                                ),
+                                style: const TextStyle(
+                                    fontSize: 12, fontFamily: 'DMSans'),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (_image != null) {
+                                      editDataWithImage();
+                                    } else {
+                                      editData();
+                                    }
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      Navigator.pushNamed(context, '/profil');
+                                    });
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          const Color.fromARGB(200, 19, 1, 96)),
+                                  shape:
+                                      MaterialStateProperty.all<OutlinedBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  minimumSize: MaterialStateProperty.all<Size>(
+                                    const Size(double.infinity, 50),
+                                  ),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'SIMPAN',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )),
-                ),
-              )
-            ],
-          ),
+                            const SizedBox(
+                              height: 15,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
-  }
-}
-
-class EditTop extends StatelessWidget {
-  const EditTop({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
-        height: 250,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover),
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(18),
-                bottomRight: Radius.circular(18))),
-      ),
-      Positioned(
-          top: 2,
-          left: 0,
-          child: IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/profil');
-            },
-            icon: const Icon(
-              Icons.west,
-              color: Colors.white,
-            ),
-            iconSize: 27,
-          )),
-      const Positioned(
-          top: 60,
-          left: 20,
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage('assets/images/profile.png'),
-          )),
-      const Positioned(
-        top: 130,
-        left: 20,
-        child: Text(
-          'Muhammad Adi Saputera',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-        ),
-      ),
-      const Positioned(
-        top: 150,
-        left: 20,
-        child: Text(
-          'D3 - Teknik Informatika',
-          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white),
-        ),
-      ),
-      Positioned(
-        top: 180,
-        left: 15,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.transparent),
-            shadowColor:
-                MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.5)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          ),
-          child:
-              const Text('Change Image', style: TextStyle(color: Colors.white)),
-        ),
-      )
-    ]);
   }
 }

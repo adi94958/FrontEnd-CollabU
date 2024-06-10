@@ -1,3 +1,5 @@
+import 'package:collab_u/pages/auth/login.dart';
+import 'package:collab_u/pages/auth/register.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
 import 'package:collab_u/pages/postingan.dart';
@@ -23,7 +25,9 @@ import 'package:collab_u/pages/manajemen_lamaran.dart';
 class AppPage {
   static List<GetPage> routes = [
     GetPage(name: splash, page: () => const SplashScreen()),
+    GetPage(name: register, page: () => const Register()),
     GetPage(name: start, page: () => const StartScreen()),
+    GetPage(name: login, page: () => const Login()),
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
@@ -54,6 +58,8 @@ class AppPage {
 
   static getSplashScreen() => splash;
   static getStartScreen() => start;
+  static getLogin() => login;
+  static getRegister() => register;
   static getNavbar() => navbar;
   static getHome() => home;
   static getActivity() => activity;
@@ -75,6 +81,8 @@ class AppPage {
 
   static String splash = '/';
   static String start = '/start';
+  static String login = '/login';
+  static String register = '/register';
   static String navbar = '/navbar';
   static String home = '/home';
   static String activity = '/activity';

@@ -1,7 +1,10 @@
+import 'package:collab_u/bloc/ProfileCubit/profile_cubit.dart';
 import 'package:collab_u/model/user.dart';
 import 'package:collab_u/model/user_pendidikan.dart';
 import 'package:collab_u/model/user_prodi.dart';
+import 'package:collab_u/services/url_global.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilAtas extends StatefulWidget {
   final User? user;
@@ -15,11 +18,21 @@ class ProfilAtas extends StatefulWidget {
 class _ProfilAtasState extends State<ProfilAtas> {
   late User? user;
   late UserProdi? prodi;
+  late dynamic fotoProfil;
+  late String id;
   @override
   void initState() {
     user = widget.user;
     prodi = widget.pendidikan?.prodi;
+    fotoProfil = widget.user?.fotoProfil;
+    id = widget.user!.idPengguna.toString();
     super.initState();
+  }
+
+  void editProfile(BuildContext context, User user, String prodi) {
+    context.read<ProfileCubit>().resetProfile();
+    context.read<ProfileCubit>().editProfile(user, prodi);
+    Navigator.pushNamed(context, '/profil/edit');
   }
 
   @override
@@ -48,12 +61,14 @@ class _ProfilAtasState extends State<ProfilAtas> {
             ),
             iconSize: 27,
           )),
-      const Positioned(
+      Positioned(
           top: 60,
           left: 20,
           child: CircleAvatar(
             radius: 30,
-            backgroundImage: AssetImage('assets/images/profile.png'),
+            backgroundImage: fotoProfil == null
+                ? const AssetImage('assets/images/profile.png')
+                : NetworkImage('$baseUrl/foto-profil/$id') as ImageProvider,
           )),
       Positioned(
         top: 130,
@@ -78,7 +93,7 @@ class _ProfilAtasState extends State<ProfilAtas> {
         right: 10,
         child: ElevatedButton.icon(
           onPressed: () {
-            Navigator.pushNamed(context, '/profil/edit');
+            editProfile(context, user!, prodi!.namaProdi!);
           },
           icon: const Icon(Icons.edit, color: Colors.white),
           label:

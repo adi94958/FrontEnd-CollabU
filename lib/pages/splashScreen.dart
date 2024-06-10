@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -8,15 +9,30 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late String id;
+
+  Future<void> getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var idGet = prefs.getString("id");
+
+    setState(() {
+      if (idGet == null) {
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushNamed(context, '/login');
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 2), () {
+          // Navigate to the StartScreen
+          Navigator.pushReplacementNamed(context, '/start');
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-
-    // Wait for 2 seconds before navigating to the new screen
-    Future.delayed(Duration(seconds: 2), () {
-      // Navigate to the StartScreen
-      Navigator.pushReplacementNamed(context, '/start');
-    });
+    getId();
   }
 
   @override

@@ -1,3 +1,6 @@
+import 'package:collab_u/pages/profil/widget/backtoprofile.dart';
+import 'package:collab_u/services/component/constant.dart';
+import 'package:collab_u/services/profil_api/pengalaman_api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -33,14 +36,35 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
     if (picked != null) {
       setState(() {
         if (controller == dateMasukController) {
+          if (_selectedDateBerakhir != null &&
+              picked.isAfter(_selectedDateBerakhir!)) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarTanggalMasuk);
+            return;
+          }
           _selectedDateMasuk = picked;
         } else {
+          if (_selectedDateMasuk != null &&
+              picked.isBefore(_selectedDateMasuk!)) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarTanggalBerakhir);
+            return;
+          }
           _selectedDateBerakhir = picked;
         }
         initializeDateFormatting('id');
         controller.text = DateFormat.yMMMM('id').format(picked);
       });
     }
+  }
+
+  void pushData() {
+    final Map<String, dynamic> pengalaman = {
+      'posisi': posisiController.text,
+      'perusahaan': perusahaanController.text,
+      'tgl_mulai': DateFormat('yyyy-MM').format(_selectedDateMasuk!),
+      'tgl_selesai': DateFormat('yyyy-MM').format(_selectedDateBerakhir!),
+    };
+
+    PengalamanApi.tambahPengalaman(context, pengalaman);
   }
 
   @override
@@ -50,111 +74,10 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
       backgroundColor: const Color.fromARGB(249, 249, 249, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      height: 260,
-                      child: Center(
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            const Text(
-                              'Hapus Perubahan ?',
-                              style: TextStyle(
-                                  fontFamily: 'DMSans',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              'Yakin menghapus perubahan yang telah anda masukkan?',
-                              style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromARGB(200, 19, 1, 96)),
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  const Size(213, 50),
-                                ),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'BATAL',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/profil');
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color.fromRGBO(244, 67, 54, 1)),
-                                shape:
-                                    MaterialStateProperty.all<OutlinedBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  const Size(213, 50),
-                                ),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'HAPUS',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            },
-            icon: const Icon(Icons.west_outlined)),
+        leading: const BackToProfile(),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +85,7 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                 height: 15,
               ),
               const Text(
-                'Tambahkan Pengalaman',
+                'Tambah Pengalaman',
                 style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'DMSans',
@@ -171,10 +94,9 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(
-                height: 580,
-                width: 400,
-                child: Form(
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +112,6 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                           height: 10,
                         ),
                         SizedBox(
-                          height: 40,
                           width: double.infinity,
                           child: TextFormField(
                             controller: posisiController,
@@ -203,11 +124,22 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 20.0),
+                                  vertical: 5, horizontal: 10.0),
                               hintText: 'Enter your text',
                             ),
                             style: const TextStyle(
                                 fontSize: 12, fontFamily: 'DMSans'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Posisi tidak boleh kosong';
+                              } else if (value.length > 30) {
+                                return 'Posisi tidak boleh lebih dari 30 huruf';
+                              }
+                              return null;
+                            },
+                            onChanged: (_) {
+                              setState(() {});
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -224,7 +156,6 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                           height: 10,
                         ),
                         SizedBox(
-                          height: 40,
                           width: double.infinity,
                           child: TextFormField(
                             controller: perusahaanController,
@@ -237,11 +168,19 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 20.0),
+                                  vertical: 5, horizontal: 10.0),
                               hintText: 'Enter your text',
                             ),
                             style: const TextStyle(
                                 fontSize: 12, fontFamily: 'DMSans'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Perusahaan atau team tidak boleh kosong';
+                              } else if (value.length > 50) {
+                                return 'Perusahaan atau team tidak boleh lebih dari 50 huruf';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -258,7 +197,6 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                           height: 10,
                         ),
                         SizedBox(
-                          height: 40,
                           width: double.infinity,
                           child: TextFormField(
                             controller: dateMasukController,
@@ -271,7 +209,7 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 20.0),
+                                    vertical: 5.0, horizontal: 10.0),
                                 hintText: 'Enter your text',
                                 prefixIcon: const Icon(
                                   Icons.calendar_month_outlined,
@@ -283,6 +221,12 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                               _selectDate(context, dateMasukController);
                             },
                             readOnly: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tanggal masuk tidak boleh kosong';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -299,7 +243,6 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                           height: 10,
                         ),
                         SizedBox(
-                          height: 40,
                           width: double.infinity,
                           child: TextFormField(
                             controller: dateBerakhirController,
@@ -312,7 +255,7 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 20.0),
+                                    vertical: 5.0, horizontal: 10.0),
                                 hintText: 'Enter your text',
                                 prefixIcon: const Icon(
                                   Icons.calendar_month_outlined,
@@ -323,59 +266,56 @@ class _TambahPengalamanState extends State<TambahPengalaman> {
                             onTap: () {
                               _selectDate(context, dateBerakhirController);
                             },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tanggal keluar tidak boleh kosong';
+                              }
+                              return null;
+                            },
                             readOnly: true,
                           ),
                         ),
-                        const SizedBox(
-                          height: 200,
-                        ),
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                Navigator.pushNamed(context, '/profil');
-                                // Form is validated, submit your data
-                                // You can access form values like:
-                                // fullNameController.text
-                                // shortNameController.text
-                                // dateMasukController.text
-                                // dateBerakhirController.text
-                                // email.text
-                                // noHp.text
-                              }
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(200, 19, 1, 96)),
-                              shape: MaterialStateProperty.all<OutlinedBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              minimumSize: MaterialStateProperty.all<Size>(
-                                const Size(213, 50),
-                              ),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                'SIMPAN',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
-                    )),
+                    ),
+                  ),
+                ),
               ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      pushData();
+                      Navigator.pushNamed(context, '/profil');
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromARGB(200, 19, 1, 96)),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    minimumSize: MaterialStateProperty.all<Size>(
+                      const Size(double.infinity, 50),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'SIMPAN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
-          ),
-        ),
-      ),
+          )),
     ));
   }
 }
