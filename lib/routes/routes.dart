@@ -1,7 +1,7 @@
 import 'package:collab_u/pages/buat_lowongan/tambah_deskripsi.dart';
 import 'package:collab_u/pages/daftar_lowongan.dart';
 import 'package:collab_u/pages/notifikasi.dart';
-import 'package:collab_u/pages/buat_lowongan/postingan.dart';
+import 'package:collab_u/pages/buat_lowongan/succes_page.dart';
 import 'package:collab_u/pages/profil/edit/edit_profil_page.dart';
 import 'package:collab_u/pages/profil/jurusan/edit_jurusan.dart';
 import 'package:collab_u/pages/profil/jurusan/tambah_jurusan.dart';
@@ -28,7 +28,7 @@ class AppPage {
     GetPage(name: navbar, page: () => const NavBar()),
     GetPage(name: home, page: () => const Home()),
     GetPage(name: activity, page: () => const Activity()),
-    GetPage(name: postingan, page: () => Postingan()),
+    GetPage(name: sukses, page: () => SuccessPage()),
     GetPage(name: tambah_deskripsi, page: () => TambahDeskripsi()),
     GetPage(name: chat, page: () => const Chat()),
     GetPage(name: lamaran, page: () => const Lamaran()),
@@ -51,7 +51,7 @@ class AppPage {
   static getNavbar() => navbar;
   static getHome() => home;
   static getActivity() => activity;
-  static getPostingan() => postingan;
+  static getSuccesPage() => sukses;
   static getChat() => chat;
   static getLamaran() => lamaran;
   static getDaftarLowongan() => daftar_lowongan;
@@ -73,7 +73,7 @@ class AppPage {
   static String navbar = '/navbar';
   static String home = '/home';
   static String activity = '/activity';
-  static String postingan = '/postingan';
+  static String sukses = '/sukses';
   static String chat = '/chat';
   static String lamaran = '/lamaran';
   static String daftar_lowongan = '/daftar_lowongan';

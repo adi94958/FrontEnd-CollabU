@@ -82,7 +82,7 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
 
       if (response.statusCode == 200) {
         // Berhasil mengirim data
-        Navigator.pushReplacementNamed(context, '/navbar');
+        Navigator.pushReplacementNamed(context, '/sukses');
       } else {
         // Gagal mengirim data
         throw Exception('Failed to submit form');
