@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collab_u/services/url_global.dart';
 
 class TambahDeskripsi extends StatefulWidget {
-  
   const TambahDeskripsi({super.key});
 
   @override
@@ -26,7 +25,10 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
   List<Prodi> prodiList = [];
   final List<String> selectedTingkat = [];
   final List<String> tingkatList = [
-    '1', '2', '3', '4',
+    '1',
+    '2',
+    '3',
+    '4',
   ];
 
   @override
@@ -163,21 +165,27 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
                         value: null,
                         onChanged: (String? newValue) {
                           if (newValue != null) {
-                            final selectedJurusanItem = jurusanList.firstWhere((jurusan) => jurusan.namaJurusan == newValue);
+                            final selectedJurusanItem = jurusanList.firstWhere(
+                                (jurusan) => jurusan.namaJurusan == newValue);
                             setState(() {
-                              selectedJurusan.add(selectedJurusanItem.idJurusan);
+                              selectedJurusan
+                                  .add(selectedJurusanItem.idJurusan);
                             });
                           }
                         },
                         selectedList: selectedJurusan.map((id) {
-                          return jurusanList.firstWhere((jurusan) => jurusan.idJurusan == id).namaJurusan;
+                          return jurusanList
+                              .firstWhere((jurusan) => jurusan.idJurusan == id)
+                              .namaJurusan;
                         }).toList(),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 8.0,
                         children: selectedJurusan.map((id) {
-                          final jurusanName = jurusanList.firstWhere((jurusan) => jurusan.idJurusan == id).namaJurusan;
+                          final jurusanName = jurusanList
+                              .firstWhere((jurusan) => jurusan.idJurusan == id)
+                              .namaJurusan;
                           return Chip(
                             label: Text(jurusanName),
                             onDeleted: () {
@@ -195,21 +203,26 @@ class _TambahDeskripsiState extends State<TambahDeskripsi> {
                         value: null,
                         onChanged: (String? newValue) {
                           if (newValue != null) {
-                            final selectedProdiItem = prodiList.firstWhere((prodi) => prodi.namaProdi == newValue);
+                            final selectedProdiItem = prodiList.firstWhere(
+                                (prodi) => prodi.namaProdi == newValue);
                             setState(() {
                               selectedProdi.add(selectedProdiItem.idProdi);
                             });
                           }
                         },
                         selectedList: selectedProdi.map((id) {
-                          return prodiList.firstWhere((prodi) => prodi.idProdi == id).namaProdi;
+                          return prodiList
+                              .firstWhere((prodi) => prodi.idProdi == id)
+                              .namaProdi;
                         }).toList(),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 8.0,
                         children: selectedProdi.map((id) {
-                          final prodiName = prodiList.firstWhere((prodi) => prodi.idProdi == id).namaProdi;
+                          final prodiName = prodiList
+                              .firstWhere((prodi) => prodi.idProdi == id)
+                              .namaProdi;
                           return Chip(
                             label: Text(prodiName),
                             onDeleted: () {

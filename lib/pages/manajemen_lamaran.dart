@@ -20,7 +20,6 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
   late int idLowongan;
   late String posisi;
   late String kompetisi;
-  // List<Pelamar> pelamars = [];
 
   @override
   void initState() {
@@ -114,9 +113,21 @@ class _ManajemenLamaranState extends State<ManajemenLamaran>
                     ),
                     SizedBox(width: 100),
                     ElevatedButton(
-                      onPressed: () {
-                        // Implement your action here
-                        print('Tutup button pressed');
+                      onPressed: () async {
+                        try {
+                          await ManajemenLamaranService.tutupLowongan(
+                              idLowongan);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Tutup lowongan berhasil'),
+                          ));
+                          setState(() {
+                            Navigator.pushNamed(context, '/lamaran');
+                          });
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Gagal menutup lowongan: $e'),
+                          ));
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.red),
