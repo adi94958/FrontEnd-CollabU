@@ -154,7 +154,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           .where(
                               (lowongan) => lowongan.idPengguna != idPengguna)
                           .toList();
-
                       if (openPositions.isEmpty) {
                         return Center(
                             child: Text('No open positions available'));
