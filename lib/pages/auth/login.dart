@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> loginApi(Map<String, dynamic> data) async {
-    print("halosss");
+    print(data);
     final url = Uri.parse('$baseUrl/login');
     final response = await http.post(
       url,
