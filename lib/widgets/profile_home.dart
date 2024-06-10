@@ -19,7 +19,7 @@ class ProfileHome extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Halo, Adi.',
+                  'Halo, Adinda Raisa Az-zahra.',
                   style: TextStyle(
                     color: Color(0xFF150B3D),
                     fontSize: 14.0,
